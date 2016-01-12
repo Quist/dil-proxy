@@ -23,6 +23,9 @@ public class Proxy {
         new Proxy(listenPort, proxyPairPort).start();
     }
 
+    private static void printUsage() {
+        System.out.println("Usage: proxy listenPort proxyPairPort");
+    }
 
     public Proxy(int listenPort, int proxyPairPort) {
         this.listenPort = listenPort;
@@ -65,7 +68,4 @@ public class Proxy {
         }
     }
 
-    private static void printUsage() {
-       System.out.println("Usage: proxy listenPort proxyPairPort");
-    }
 }
