@@ -2,10 +2,13 @@ package main.java.proxy;
 
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class Proxy {
 
+    final Logger logger = LoggerFactory.getLogger(Proxy.class);
     private final DefaultCamelContext camelContext;
     private int listenPort;
     private int proxyPairPort;
@@ -37,7 +40,7 @@ public class Proxy {
     public void start() {
         try {
             camelContext.start();
-            System.out.println("Proxy listening on port " + listenPort);
+            logger.info("Proxy started and listening on port " + listenPort);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -52,7 +55,7 @@ public class Proxy {
         try {
             camelContext.addRoutes(new RouteBuilder() {
                 public void configure() {
-                    from(incomingServiceMessagePath).process(new IncomingServiceMessageProcessor())
+                    from(incomingServiceMessagePath).process(new IncomingWebServiceMessageProcessor())
                             .to(proxyPath);
                 }
             });
