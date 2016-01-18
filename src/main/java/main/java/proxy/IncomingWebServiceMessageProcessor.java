@@ -1,15 +1,26 @@
 package main.java.proxy;
 
 import org.apache.camel.Exchange;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.camel.Processor;
+import org.apache.camel.http.common.HttpMessage;
 
-public class IncomingWebServiceMessageProcessor implements org.apache.camel.Processor {
-    final Logger logger = LoggerFactory.getLogger(Proxy.class);
+import javax.servlet.http.HttpServletRequest;
+
+public class IncomingWebServiceMessageProcessor implements Processor {
+
+    private HttpServletRequestLogger httpServletRequestLogger = new HttpServletRequestLogger();
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        logger.info("Received incoming message from Web Service: ", exchange);
-        logger.warn(new M);
+        HttpServletRequest request = exchange.getIn(HttpMessage.class).getRequest();
+        String body = exchange.getIn().getBody(String.class);
+        if (body == null) {
+            body = "";
+        }
+
+        exchange.getIn().setHeader("path", request.getRequestURL());
+        httpServletRequestLogger.log(request, body);
+
+        exchange.getIn().setBody(body);
     }
 }
