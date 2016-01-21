@@ -22,7 +22,8 @@ public class ProxyRouteBuilder {
             context.addRoutes(new RouteBuilder() {
                 public void configure() {
                     from(webServiceListenRoute).process(new IncomingWebServiceMessageProcessor())
-                            .to(OppositeProxyRoute);
+                            .to(OppositeProxyRoute)
+                    .process(new ProxyResponseProcessor());
                 }
             });
             context.addRoutes(new RouteBuilder() {
@@ -30,7 +31,8 @@ public class ProxyRouteBuilder {
                     from(proxyListenRoute)
                             .process(new IncomingProxyMessageProcessor())
                             .removeHeaders("CamelHttp*")
-                            .toD("${header.path}" + "?bridgeEndpoint=true");
+                            .toD("${header.path}" + bridgeEndpoint)
+                            .process(new HttpResponseProcessor());
                 }
             });
 

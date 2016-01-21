@@ -13,9 +13,11 @@ public class IncomingProxyMessageProcessor implements Processor {
     @Override
     public void process(Exchange exchange) throws Exception {
         HttpServletRequest req = exchange.getIn(HttpMessage.class).getRequest();
-        String body = exchange.getIn().getBody(String.class);
-        exchange.getOut().setHeaders(exchange.getIn().getHeaders());
 
+        String body = exchange.getIn().getBody(String.class);
+
+
+        exchange.getOut().setHeaders(exchange.getIn().getHeaders());
         if (body == null) {
             body = "";
         }

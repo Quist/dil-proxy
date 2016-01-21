@@ -1,6 +1,5 @@
 package main.java.proxy;
 
-import org.apache.camel.Exchange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
