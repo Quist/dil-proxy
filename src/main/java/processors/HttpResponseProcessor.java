@@ -1,4 +1,4 @@
-package main.java.proxy;
+package processors;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;

@@ -3,6 +3,8 @@ package main.java.proxy;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import routes.ProxyRouteBuilder;
+import routes.WebServiceRouteBuilder;
 
 
 public class Proxy {
@@ -37,14 +39,19 @@ public class Proxy {
     }
 
     public void start() {
-
-        new ProxyRouteBuilder().buildRoutes(port, oppositeProxyHost, camelContext);
+        String host = String.format("http://0.0.0.0:%d", port);
 
         try {
+            addRoutes(host);
             camelContext.start();
             logger.info("Proxy started and listening on port " + port);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void addRoutes(String host) throws Exception {
+        camelContext.addRoutes(new WebServiceRouteBuilder(host, oppositeProxyHost));
+        camelContext.addRoutes(new ProxyRouteBuilder(host));
     }
 }
