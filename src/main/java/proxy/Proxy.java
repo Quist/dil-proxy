@@ -1,4 +1,4 @@
-package main.java.proxy;
+package proxy;
 
 import org.apache.camel.impl.DefaultCamelContext;
 import org.slf4j.Logger;

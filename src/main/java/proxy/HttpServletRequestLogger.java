@@ -1,4 +1,4 @@
-package main.java.proxy;
+package proxy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +16,6 @@ public class HttpServletRequestLogger {
         logMessage += "\nQuery String: " + request.getQueryString();
         logMessage += "\nHeader names: " + request.getHeaderNames();
         logMessage += "\nRemoteHost: " + request.getRemoteHost();
-
 
         if (body.length() > 0) {
             logMessage += "\nRequest body:\n" + body;

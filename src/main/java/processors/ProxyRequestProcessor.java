@@ -1,6 +1,6 @@
 package processors;
 
-import main.java.proxy.HttpServletRequestLogger;
+import proxy.HttpServletRequestLogger;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.http.common.HttpMessage;
