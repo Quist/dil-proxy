@@ -1,20 +1,22 @@
 package routes;
 
+import com.typesafe.config.Config;
+import org.apache.camel.Endpoint;
 import processors.HttpResponseProcessor;
 import processors.ProxyRequestProcessor;
 import org.apache.camel.builder.RouteBuilder;
 
 public class ProxyRouteBuilder extends RouteBuilder {
 
-    private final String host;
+    private final Config networkConfig;
 
-    public ProxyRouteBuilder(String host) {
-        this.host = host;
+    public ProxyRouteBuilder(Config networkConfig) {
+        this.networkConfig = networkConfig;
     }
 
     @Override
     public void configure() throws Exception {
-        final String proxyListenRoute = String.format("jetty:%s/proxy?matchOnUriPrefix=true", host);
+        final String proxyListenRoute = String.format("jetty:%s/proxy?matchOnUriPrefix=true", networkConfig.getString("hostname"));
 
         from(proxyListenRoute)
                 .process(new ProxyRequestProcessor())

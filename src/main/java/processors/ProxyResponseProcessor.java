@@ -4,6 +4,8 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
 
+import javax.servlet.http.HttpServletRequest;
+
 public class ProxyResponseProcessor implements Processor{
 
     @Override

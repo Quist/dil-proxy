@@ -1,5 +1,7 @@
 package proxy;
 
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,8 +13,7 @@ public class Proxy {
 
     private final Logger logger = LoggerFactory.getLogger(Proxy.class);
     private final DefaultCamelContext camelContext;
-    private int port;
-    private String oppositeProxyHost;
+    private final Config config;
 
     public static void main(String args[]) {
 
@@ -21,10 +22,9 @@ public class Proxy {
             System.exit(1);
         }
 
-        final int port = Integer.parseInt(args[0]);
-        final String oppositeProxyHost = args[1];
+        Config proxyConfig = ConfigFactory.load();
 
-        Proxy proxy = new Proxy(port, oppositeProxyHost);
+        Proxy proxy = new Proxy(proxyConfig);
         proxy.start();
     }
 
@@ -32,26 +32,24 @@ public class Proxy {
         System.out.println("Usage: proxy port oppositeProxyPort");
     }
 
-    public Proxy(int port, String oppositeProxyHost) {
-        this.port = port;
-        this.oppositeProxyHost = oppositeProxyHost;
+    public Proxy(Config proxyConfig) {
         this.camelContext = new DefaultCamelContext();
+        this.config = proxyConfig;
     }
-
     public void start() {
-        String host = String.format("http://0.0.0.0:%d", port);
+        Config networkConfig = config.getConfig("network");
 
         try {
-            addRoutes(host);
+            addRoutes(networkConfig);
             camelContext.start();
-            logger.info("Proxy started and listening on port " + port);
+            logger.info("Proxy started and listening on port " + networkConfig.getInt("port"));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void addRoutes(String host) throws Exception {
-        camelContext.addRoutes(new WebServiceRouteBuilder(host, oppositeProxyHost));
-        camelContext.addRoutes(new ProxyRouteBuilder(host));
+    private void addRoutes(Config networkConfig) throws Exception {
+        camelContext.addRoutes(new WebServiceRouteBuilder(networkConfig));
+        camelContext.addRoutes(new ProxyRouteBuilder(networkConfig));
     }
 }
