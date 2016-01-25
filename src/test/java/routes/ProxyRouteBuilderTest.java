@@ -54,7 +54,7 @@ public class ProxyRouteBuilderTest {
         spy.configure();
 
         String expectedFrom = "jetty: http://localhost:3001/proxy?matchOnUriPrefix=true";
-        RouteDefinition a = Mockito.spy(Mockito.verify(spy).from(expectedFrom));
+        //RouteDefinition a = Mockito.spy(Mockito.verify(spy).from(expectedFrom));
         //RouteDefinition process = Mockito.verify(a).process(isA(CoreMatchers.any()));
 
 
