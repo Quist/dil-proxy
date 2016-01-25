@@ -11,6 +11,11 @@ import org.junit.Test;
 
 import javax.servlet.http.HttpServletRequest;
 
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -38,7 +43,6 @@ public class HttpRequestProcessorTest {
     @Test public void testProcessSupportsCompression() throws Exception {
         Config proxyConfig = ConfigFactory.empty();
         proxyConfig = proxyConfig.withValue("useCompression", ConfigValueFactory.fromAnyRef(true));
-
 
         Compressor compressor = new Compressor();
         StringBuffer requestURL = new StringBuffer("http://myubertest.com");
@@ -74,7 +78,21 @@ public class HttpRequestProcessorTest {
         HttpMessage httpMessage = mock(HttpMessage.class);
         HttpServletRequest request = mock(HttpServletRequest.class);
 
+        Set<String> set = new HashSet<String>();
+
         when(request.getRequestURL()).thenReturn(requestURL);
+        when(request.getHeaderNames()).thenReturn(new Enumeration<String>() {
+            @Override
+            public boolean hasMoreElements() {
+                return false;
+            }
+
+            @Override
+            public String nextElement() {
+                return null;
+            }
+        });
+
         when(exchange.getIn(HttpMessage.class)).thenReturn(httpMessage);
         when(exchange.getIn()).thenReturn(httpMessage);
         when(httpMessage.getRequest()).thenReturn(request);
@@ -82,3 +100,4 @@ public class HttpRequestProcessorTest {
     }
 
 }
+
