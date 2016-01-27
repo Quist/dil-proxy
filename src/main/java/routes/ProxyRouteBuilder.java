@@ -1,27 +1,39 @@
 package routes;
 
-import com.typesafe.config.Config;
-import org.apache.camel.Endpoint;
+import config.DilProxyConfig;
 import processors.HttpResponseProcessor;
 import processors.ProxyRequestProcessor;
 import org.apache.camel.builder.RouteBuilder;
 
 public class ProxyRouteBuilder extends RouteBuilder {
 
-    private final Config networkConfig;
+    private final DilProxyConfig config;
+    private final String proxyListenRoute;
 
-    public ProxyRouteBuilder(Config networkConfig) {
-        this.networkConfig = networkConfig;
+
+    public ProxyRouteBuilder(DilProxyConfig config) {
+        this.config = config;
+        proxyListenRoute = String.format("jetty:%s/proxy?matchOnUriPrefix=true", config.getHostname());
     }
 
     @Override
     public void configure() throws Exception {
-        final String proxyListenRoute = String.format("jetty:%s/proxy?matchOnUriPrefix=true", networkConfig.getString("hostname"));
-
-        from(proxyListenRoute)
-                .process(new ProxyRequestProcessor())
-                .removeHeaders("CamelHttp*")
-                .toD("${header.path}" + "?bridgeEndpoint=true")
-                .process(new HttpResponseProcessor());
+        if (config.useCompression()) {
+            from(proxyListenRoute)
+                    .process(new ProxyRequestProcessor())
+                    .unmarshal()
+                    .gzip()
+                    .removeHeaders("CamelHttp*")
+                    .toD("${header.path}" + "?bridgeEndpoint=true")
+                    .process(new HttpResponseProcessor())
+                    .marshal()
+                    .gzip();
+        } else {
+            from(proxyListenRoute)
+                    .process(new ProxyRequestProcessor())
+                    .removeHeaders("CamelHttp*")
+                    .toD("${header.path}" + "?bridgeEndpoint=true")
+                    .process(new HttpResponseProcessor());
+        }
     }
 }

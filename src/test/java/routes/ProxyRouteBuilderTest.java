@@ -3,6 +3,7 @@ package routes;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import com.typesafe.config.ConfigValueFactory;
+import config.DilProxyConfig;
 import org.apache.camel.Processor;
 import org.hamcrest.CoreMatchers;
 import org.mockito.Mockito;
@@ -21,8 +22,13 @@ public class ProxyRouteBuilderTest {
     @Test
     public void testConfigureAddsOneRoute() throws Exception {
         Config networkConfig = ConfigFactory.empty()
-                .withValue("hostname", ConfigValueFactory.fromAnyRef("http://localhost:3001"));
-        ProxyRouteBuilder proxyRouteBuilder = new ProxyRouteBuilder(networkConfig);
+                .withValue("network.hostname", ConfigValueFactory.fromAnyRef("http://localhost:3001"))
+                .withValue("network.proxyHostname", ConfigValueFactory.fromAnyRef("http://localhost:4001"))
+                .withValue("proxy.useCompression", ConfigValueFactory.fromAnyRef(true));
+
+        DilProxyConfig config = new DilProxyConfig(networkConfig);
+
+        ProxyRouteBuilder proxyRouteBuilder = new ProxyRouteBuilder(config);
         proxyRouteBuilder.configure();
 
         assertEquals(1, proxyRouteBuilder.getRouteCollection().getRoutes().size());
@@ -30,37 +36,36 @@ public class ProxyRouteBuilderTest {
 
     @Test
     public void testConfigureAddsCorrectFrom() throws Exception {
-        String hostname =" http://localhost:3001";
         Config networkConfig = ConfigFactory.empty()
-                .withValue("hostname", ConfigValueFactory.fromAnyRef(hostname));
-        ProxyRouteBuilder proxyRouteBuilder = new ProxyRouteBuilder(networkConfig);
+                .withValue("network.hostname", ConfigValueFactory.fromAnyRef("http://localhost:3001"))
+                .withValue("network.proxyHostname", ConfigValueFactory.fromAnyRef("http://localhost:4001"))
+                .withValue("proxy.useCompression", ConfigValueFactory.fromAnyRef(true));
+
+        DilProxyConfig config = new DilProxyConfig(networkConfig);
+        ProxyRouteBuilder proxyRouteBuilder = new ProxyRouteBuilder(config);
         proxyRouteBuilder.configure();
 
         List<RouteDefinition> routes = proxyRouteBuilder.getRouteCollection().getRoutes();
 
-        assertEquals("Nymber of from inputs", 1, routes.get(0).getInputs().size());
+        assertEquals("Number of from inputs", 1, routes.get(0).getInputs().size());
 
-        String expectedFrom = "jetty: http://localhost:3001/proxy?matchOnUriPrefix=true";
+        String expectedFrom = "jetty:http://localhost:3001/proxy?matchOnUriPrefix=true";
         assertEquals(expectedFrom, routes.get(0).getInputs().get(0).getEndpointUri());
     }
 
     @Test
     public void testConfigureAddProcessor() throws Exception {
-        String hostname =" http://localhost:3001";
         Config networkConfig = ConfigFactory.empty()
-                .withValue("hostname", ConfigValueFactory.fromAnyRef(hostname));
+                .withValue("network.hostname", ConfigValueFactory.fromAnyRef("http://localhost:3001"))
+                .withValue("network.proxyHostname", ConfigValueFactory.fromAnyRef("http://localhost:4001"))
+                .withValue("proxy.useCompression", ConfigValueFactory.fromAnyRef(true));
 
-        ProxyRouteBuilder spy = Mockito.spy(new ProxyRouteBuilder(networkConfig));
+        DilProxyConfig config = new DilProxyConfig(networkConfig);
+
+        ProxyRouteBuilder spy = Mockito.spy(new ProxyRouteBuilder(config));
         spy.configure();
 
-        String expectedFrom = "jetty: http://localhost:3001/proxy?matchOnUriPrefix=true";
-        //RouteDefinition a = Mockito.spy(Mockito.verify(spy).from(expectedFrom));
-        //RouteDefinition process = Mockito.verify(a).process(isA(CoreMatchers.any()));
-
-
     }
-
-
 
 
 }

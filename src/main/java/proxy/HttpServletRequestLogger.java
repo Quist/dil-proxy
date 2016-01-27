@@ -17,7 +17,7 @@ public class HttpServletRequestLogger {
         logMessage += "\nPath header: " + request.getHeader("path");
         logMessage += "\nQuery String: " + request.getQueryString();
 
-        if (body.length() > 0) {
+        if (body != null) {
             logMessage += "\nRequest body:\n" + body;
         }
 

@@ -15,15 +15,7 @@ public class ProxyRequestProcessor implements Processor {
     public void process(Exchange exchange) throws Exception {
         HttpServletRequest req = exchange.getIn(HttpMessage.class).getRequest();
 
-        String body = exchange.getIn().getBody(String.class);
-
-
-        exchange.getOut().setHeaders(exchange.getIn().getHeaders());
-        if (body == null) {
-            body = "";
-        }
-
-        httpServletRequestLogger.log(req, body);
+        httpServletRequestLogger.log(req, null);
 
     }
 }

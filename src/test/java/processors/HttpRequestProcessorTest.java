@@ -31,30 +31,13 @@ public class HttpRequestProcessorTest {
         StringBuffer requestURL = new StringBuffer("http://myubertest.com");
         Compressor compressor = new Compressor();
 
-        HttpRequestProcessor processor = new HttpRequestProcessor(proxyConfig, compressor);
+        HttpRequestProcessor processor = new HttpRequestProcessor();
         Exchange exchange = createExchange(requestURL);
 
         processor.process(exchange);
 
         verify(exchange.getIn()).setHeader(eq("path"), eq(requestURL));
     }
-
-
-    @Test public void testProcessSupportsCompression() throws Exception {
-        Config proxyConfig = ConfigFactory.empty();
-        proxyConfig = proxyConfig.withValue("useCompression", ConfigValueFactory.fromAnyRef(true));
-
-        Compressor compressor = new Compressor();
-        StringBuffer requestURL = new StringBuffer("http://myubertest.com");
-
-        HttpRequestProcessor processor = new HttpRequestProcessor(proxyConfig, compressor);
-        Exchange exchange = createExchange(requestURL);
-
-        processor.process(exchange);
-
-        verify(exchange.getIn()).setBody("compressed");
-    }
-
 
     @Test
     public void testProcessRetainsBody() throws Exception {
@@ -64,12 +47,11 @@ public class HttpRequestProcessorTest {
         Compressor compressor = new Compressor();
         StringBuffer requestURL = new StringBuffer("http://myubertest.com");
 
-        HttpRequestProcessor processor = new HttpRequestProcessor(proxyConfig, compressor);
+        HttpRequestProcessor processor = new HttpRequestProcessor();
         Exchange exchange = createExchange(requestURL);
 
         processor.process(exchange);
 
-        verify(exchange.getIn()).setBody("");
     }
 
 
@@ -77,8 +59,6 @@ public class HttpRequestProcessorTest {
         Exchange exchange = mock(Exchange.class);
         HttpMessage httpMessage = mock(HttpMessage.class);
         HttpServletRequest request = mock(HttpServletRequest.class);
-
-        Set<String> set = new HashSet<String>();
 
         when(request.getRequestURL()).thenReturn(requestURL);
         when(request.getHeaderNames()).thenReturn(new Enumeration<String>() {

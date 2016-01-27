@@ -3,6 +3,7 @@ package proxy;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import compressor.Compressor;
+import config.DilProxyConfig;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +17,7 @@ public class Proxy {
 
     private final Logger logger = LoggerFactory.getLogger(Proxy.class);
     private final DefaultCamelContext camelContext;
-    private final Config config;
+    private final DilProxyConfig config;
 
     public static void main(String args[]) {
 
@@ -25,7 +26,7 @@ public class Proxy {
             System.exit(1);
         }
 
-        Config config = ConfigFactory.load(args[0]);
+        DilProxyConfig config = new DilProxyConfig(ConfigFactory.load(args[0]));
 
         Proxy proxy = new Proxy(config);
         proxy.start();
@@ -35,28 +36,27 @@ public class Proxy {
         System.out.println("Usage: proxy configFile");
     }
 
-    public Proxy(Config proxyConfig) {
+    public Proxy(DilProxyConfig config) {
         this.camelContext = new DefaultCamelContext();
-        this.config = proxyConfig;
+        this.config = config;
     }
 
     public void start() {
-        Config networkConfig = config.getConfig("network");
-        Config proxyConfig = config.getConfig("proxy");
+
         try {
-            addRoutes(networkConfig, proxyConfig);
+            addRoutes(config);
             camelContext.start();
-            logger.info("Proxy started and listening on " + networkConfig.getString("hostname"));
+            logger.info("Proxy started and listening on " + config.getHostname());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void addRoutes(Config networkConfig, Config proxyConfig) throws Exception {
-        HttpRequestProcessor httpRequestProcessor = new HttpRequestProcessor(proxyConfig, new Compressor());
+    private void addRoutes(DilProxyConfig config) throws Exception {
+        HttpRequestProcessor httpRequestProcessor = new HttpRequestProcessor();
         ProxyResponseProcessor proxyResponseProcessor = new ProxyResponseProcessor();
 
-        camelContext.addRoutes(new WebServiceRouteBuilder(networkConfig, httpRequestProcessor, proxyResponseProcessor));
-        camelContext.addRoutes(new ProxyRouteBuilder(networkConfig));
+        camelContext.addRoutes(new WebServiceRouteBuilder(config, httpRequestProcessor, proxyResponseProcessor));
+        camelContext.addRoutes(new ProxyRouteBuilder(config));
     }
 }
