@@ -1,16 +1,18 @@
 package proxy;
 
-import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import compressor.Compressor;
 import config.DilProxyConfig;
+import org.apache.camel.component.amqp.AMQPComponent;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import processors.HttpRequestProcessor;
 import processors.ProxyResponseProcessor;
 import routes.ProxyRouteBuilder;
+import routes.RouteFactory;
 import routes.WebServiceRouteBuilder;
+
+import java.net.MalformedURLException;
 
 
 public class Proxy {
@@ -41,9 +43,9 @@ public class Proxy {
         this.config = config;
     }
 
-    public void start() {
-
+    public void start()  {
         try {
+            addComponents();
             addRoutes(config);
             camelContext.start();
             logger.info("Proxy started and listening on " + config.getHostname());
@@ -52,11 +54,16 @@ public class Proxy {
         }
     }
 
+    private void addComponents() throws MalformedURLException {
+        AMQPComponent amqp = AMQPComponent.amqp10Component("amqp://porto.ifi.uio.no:5672");
+        camelContext.addComponent("amqp", amqp);
+    }
+
     private void addRoutes(DilProxyConfig config) throws Exception {
         HttpRequestProcessor httpRequestProcessor = new HttpRequestProcessor();
         ProxyResponseProcessor proxyResponseProcessor = new ProxyResponseProcessor();
 
         camelContext.addRoutes(new WebServiceRouteBuilder(config, httpRequestProcessor, proxyResponseProcessor));
-        camelContext.addRoutes(new ProxyRouteBuilder(config));
+        camelContext.addRoutes(new RouteFactory().create(config));
     }
 }

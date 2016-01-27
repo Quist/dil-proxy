@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
-import java.util.List;
 
 public class HttpServletRequestLogger {
     final Logger logger = LoggerFactory.getLogger(HttpServletRequestLogger.class);

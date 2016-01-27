@@ -1,11 +1,13 @@
 package config;
 
 import com.typesafe.config.Config;
+import proxy.Protocol;
 
 public class DilProxyConfig {
     private final boolean useCompression;
     private final String hostname;
     private final String proxyHostname;
+    private final Protocol protocol;
 
     public DilProxyConfig(Config config) {
         Config proxyConfig = config.getConfig("proxy");
@@ -16,6 +18,7 @@ public class DilProxyConfig {
         proxyHostname = networkConfig.getString("proxyHostname");
         hostname = networkConfig.getString("hostname");
 
+        protocol = Protocol.AMQP;
     }
 
     public boolean useCompression() {
@@ -28,6 +31,10 @@ public class DilProxyConfig {
 
     public String getProxyHostname() {
         return proxyHostname;
+    }
+
+    public Protocol getProtocol() {
+        return protocol;
     }
 
 }

@@ -1,25 +1,25 @@
 package routes;
 
 import config.DilProxyConfig;
-import processors.HttpResponseProcessor;
-import processors.ProxyRequestProcessor;
 import org.apache.camel.builder.RouteBuilder;
+import processors.AmqpRequestProcessor;
+import processors.HttpResponseProcessor;
 
-public class ProxyRouteBuilder extends RouteBuilder {
-
+public class AmqpRouteBuilder extends RouteBuilder {
     private final DilProxyConfig config;
 
-    public ProxyRouteBuilder(DilProxyConfig config) {
+    public AmqpRouteBuilder(DilProxyConfig config) {
         this.config = config;
     }
 
+
     @Override
     public void configure() throws Exception {
-        String proxyListenRoute = String.format("jetty:%s/proxy?matchOnUriPrefix=true", config.getHostname());
+        String fromPath = "amqp:queue:incoming";
 
         if (config.useCompression()) {
-            from(proxyListenRoute)
-                    .process(new ProxyRequestProcessor())
+            from(fromPath)
+                    .process(new AmqpRequestProcessor())
                     .unmarshal()
                     .gzip()
                     .removeHeaders("CamelHttp*")
@@ -28,10 +28,10 @@ public class ProxyRouteBuilder extends RouteBuilder {
                     .marshal()
                     .gzip();
         } else {
-            from(proxyListenRoute)
-                    .process(new ProxyRequestProcessor())
+            from(fromPath)
+                    .process(new AmqpRequestProcessor())
                     .removeHeaders("CamelHttp*")
-                    .toD("${header.path}" + "?bridgeEndpoint=true")
+                    .toD("jetty:http://localhost:4001/proxy")
                     .process(new HttpResponseProcessor());
         }
     }

@@ -1,14 +1,18 @@
 package routes;
 
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
-import compressor.Compressor;
+
 import config.DilProxyConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import processors.HttpRequestProcessor;
 import processors.ProxyResponseProcessor;
 import org.apache.camel.builder.RouteBuilder;
 
+
+
 public class WebServiceRouteBuilder extends RouteBuilder {
+    final Logger logger = LoggerFactory.getLogger(WebServiceRouteBuilder.class);
+
     private final HttpRequestProcessor httpRequestProcessor;
     private final ProxyResponseProcessor proxyResponseProcessor;
     private final DilProxyConfig config;
@@ -23,7 +27,7 @@ public class WebServiceRouteBuilder extends RouteBuilder {
     @Override
     public void configure() throws Exception {
         String fromPath = String.format("jetty:%s?matchOnUriPrefix=true", config.getHostname());
-        String toPath = String.format("jetty:%s/proxy?bridgeEndpoint=true", config.getProxyHostname());
+        String toPath = createToPath();
 
         if (config.useCompression()) {
             from(fromPath)
@@ -40,5 +44,26 @@ public class WebServiceRouteBuilder extends RouteBuilder {
                     .to(toPath)
                     .process(proxyResponseProcessor);
         }
+    }
+
+    private String createToPath() {
+        switch (config.getProtocol()) {
+            case AMQP:
+                return constructAmqpToPath();
+            case HTTP:
+                return constructHttpToPath();
+            default:
+                logger.error("No path configuration for: " + config.getProtocol());
+                throw new IllegalArgumentException("No path configuration for: " + config.getProtocol());
+        }
+    }
+
+    private String constructHttpToPath() {
+        return String.format("jetty:%s/proxy?bridgeEndpoint=true", config.getProxyHostname());
+    }
+
+    private String constructAmqpToPath() {
+        String toPath = String.format("amqp:topic:notify");
+        return toPath;
     }
 }
