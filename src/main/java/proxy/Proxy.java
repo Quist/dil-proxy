@@ -20,25 +20,26 @@ public class Proxy {
 
     public static void main(String args[]) {
 
-        if (args.length < 2) {
+        if (args.length < 1) {
             printUsage();
             System.exit(1);
         }
 
-        Config proxyConfig = ConfigFactory.load();
+        Config config = ConfigFactory.load(args[0]);
 
-        Proxy proxy = new Proxy(proxyConfig);
+        Proxy proxy = new Proxy(config);
         proxy.start();
     }
 
     private static void printUsage() {
-        System.out.println("Usage: proxy port oppositeProxyPort");
+        System.out.println("Usage: proxy configFile");
     }
 
     public Proxy(Config proxyConfig) {
         this.camelContext = new DefaultCamelContext();
         this.config = proxyConfig;
     }
+
     public void start() {
         Config networkConfig = config.getConfig("network");
         Config proxyConfig = config.getConfig("proxy");
