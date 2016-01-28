@@ -8,6 +8,7 @@ public class DilProxyConfig {
     private final String hostname;
     private final String proxyHostname;
     private final Protocol protocol;
+    private final String brokerConnectionUri;
 
     public DilProxyConfig(Config config) {
         Config proxyConfig = config.getConfig("proxy");
@@ -17,6 +18,7 @@ public class DilProxyConfig {
 
         proxyHostname = networkConfig.getString("proxyHostname");
         hostname = networkConfig.getString("hostname");
+        brokerConnectionUri = networkConfig.getString("brokerConnectionUri");
 
         protocol = setProtocol(proxyConfig.getString("protocol"));
     }
@@ -35,6 +37,10 @@ public class DilProxyConfig {
 
     public Protocol getProtocol() {
         return protocol;
+    }
+
+    public String getBrokerConnectionUri() {
+        return brokerConnectionUri;
     }
 
     private Protocol setProtocol(String protocol) {

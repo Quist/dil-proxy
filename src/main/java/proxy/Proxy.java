@@ -55,7 +55,8 @@ public class Proxy {
     }
 
     private void addComponents() throws MalformedURLException {
-        AMQPComponent amqp = AMQPComponent.amqp10Component("amqp://porto.ifi.uio.no:5672");
+        logger.info("Adding AMQP component with broker connection URI: " + config.getBrokerConnectionUri());
+        AMQPComponent amqp = AMQPComponent.amqp10Component(config.getBrokerConnectionUri());
         camelContext.addComponent("amqp", amqp);
     }
 
