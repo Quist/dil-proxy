@@ -18,7 +18,7 @@ public class DilProxyConfig {
         proxyHostname = networkConfig.getString("proxyHostname");
         hostname = networkConfig.getString("hostname");
 
-        protocol = Protocol.AMQP;
+        protocol = setProtocol(proxyConfig.getString("protocol"));
     }
 
     public boolean useCompression() {
@@ -37,4 +37,17 @@ public class DilProxyConfig {
         return protocol;
     }
 
+    private Protocol setProtocol(String protocol) {
+        switch (protocol.toLowerCase()) {
+            case "amqp": {
+                return Protocol.AMQP;
+            }
+            case "http": {
+                return Protocol.HTTP;
+            }
+            default: {
+                throw  new IllegalArgumentException("Unsupported protocol: " + protocol);
+            }
+        }
+    }
 }
