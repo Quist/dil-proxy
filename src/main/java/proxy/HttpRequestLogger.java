@@ -6,8 +6,8 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 
-public class HttpServletRequestLogger {
-    private final Logger logger = LoggerFactory.getLogger(HttpServletRequestLogger.class);
+public class HttpRequestLogger {
+    private final Logger logger = LoggerFactory.getLogger(HttpRequestLogger.class);
 
     public void log(HttpServletRequest request, String body) {
         String logMessage = "Received HTTP request:";

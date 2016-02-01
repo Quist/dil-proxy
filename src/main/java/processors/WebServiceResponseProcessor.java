@@ -5,9 +5,9 @@ import org.apache.camel.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HttpResponseProcessor implements Processor {
+public class WebServiceResponseProcessor implements Processor {
 
-    final Logger logger = LoggerFactory.getLogger(HttpResponseProcessor.class);
+    final Logger logger = LoggerFactory.getLogger(WebServiceResponseProcessor.class);
 
     @Override
     public void process(Exchange exchange) throws Exception {

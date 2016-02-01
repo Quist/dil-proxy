@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.net.MalformedURLException;
 
 public class ComponentInitializer {
-    private final Logger logger = LoggerFactory.getLogger(HttpServletRequestLogger.class);
+    private final Logger logger = LoggerFactory.getLogger(HttpRequestLogger.class);
     private final CamelContext camelContext;
 
     public ComponentInitializer(CamelContext camelContext) {

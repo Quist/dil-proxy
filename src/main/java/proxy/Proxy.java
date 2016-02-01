@@ -2,16 +2,11 @@ package proxy;
 
 import com.typesafe.config.ConfigFactory;
 import config.DilProxyConfig;
-import org.apache.camel.component.amqp.AMQPComponent;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import processors.HttpRequestProcessor;
-import processors.ProxyResponseProcessor;
-import routes.RouteFactory;
-import routes.WebServiceRouteBuilder;
-
-import java.net.MalformedURLException;
+import routes.proxie.ProxyRouteFactory;
+import routes.webservice.WebServiceRouteFactory;
 
 
 public class Proxy {
@@ -56,9 +51,10 @@ public class Proxy {
     }
 
     private void addRoutes(DilProxyConfig config) throws Exception {
-        RouteFactory routeFactory = new RouteFactory();
+        WebServiceRouteFactory webServiceRouteFactory = new WebServiceRouteFactory();
+        ProxyRouteFactory proxyRouteFactory = new ProxyRouteFactory();
 
-        camelContext.addRoutes(routeFactory.createWebServiceRouteBuilder(config));
-        camelContext.addRoutes(routeFactory.createProxyRouteBuilder(config));
+        camelContext.addRoutes(webServiceRouteFactory.createWebServiceRouteBuilder(config));
+        camelContext.addRoutes(proxyRouteFactory.createProxyRouteBuilder(config));
     }
 }
