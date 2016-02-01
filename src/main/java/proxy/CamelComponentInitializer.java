@@ -20,11 +20,6 @@ public class CamelComponentInitializer {
         switch (config.getProtocol()) {
             case AMQP:
                 addAmqpComponent(config.getAmqpConfig());
-            case HTTP:
-                break;
-            default:
-                logger.error("No path configuration for: " + config.getProtocol());
-                throw new IllegalArgumentException("No configuration for: " + config.getProtocol());
         }
     }
 

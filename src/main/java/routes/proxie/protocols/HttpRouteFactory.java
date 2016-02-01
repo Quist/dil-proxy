@@ -7,11 +7,11 @@ import processors.WebServiceResponseProcessor;
 import routes.RouteHandler;
 import routes.proxie.ProxyRouteBuilder;
 
-public class HttpProtocolFactory implements ProtocolFactory {
+public class HttpRouteFactory implements ProtocolFactory {
 
     private final DilProxyConfig config;
 
-    public HttpProtocolFactory(DilProxyConfig config) {
+    public HttpRouteFactory(DilProxyConfig config) {
         this.config = config;
     }
 
@@ -28,7 +28,7 @@ public class HttpProtocolFactory implements ProtocolFactory {
     @Override
     public RouteBuilder create() {
         RouteHandler routeHandler = new RouteHandler(new HttpRequestProcessor(), new WebServiceResponseProcessor());
-        String listenUri = new HttpProtocolFactory(config).getListenUri();
+        String listenUri = getListenUri();
         return new ProxyRouteBuilder(config, routeHandler, listenUri);
     }
 }

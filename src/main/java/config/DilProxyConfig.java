@@ -50,6 +50,9 @@ public class DilProxyConfig {
             case "http": {
                 return Protocol.HTTP;
             }
+            case "mqtt": {
+                return Protocol.MQTT;
+            }
             default: {
                 throw  new IllegalArgumentException("Unsupported protocol: " + protocol);
             }

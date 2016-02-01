@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import routes.proxie.ProxyRouteFactory;
 import routes.proxie.protocols.AmqpRouteFactory;
-import routes.proxie.protocols.HttpProtocolFactory;
+import routes.proxie.protocols.HttpRouteFactory;
 import routes.proxie.protocols.ProtocolFactory;
 import routes.webservice.WebServiceRouteFactory;
 
@@ -68,7 +68,9 @@ public class Proxy {
             case AMQP:
                 return new AmqpRouteFactory(config);
             case HTTP:
-                return new HttpProtocolFactory(config);
+                return new HttpRouteFactory(config);
+            case MQTT:
+                return new MqttRouteFactory(config);
             default:
                 logger.error("No configuration for: " + config.getProtocol());
                 throw new IllegalArgumentException("No configuration for: " + config.getProtocol());
