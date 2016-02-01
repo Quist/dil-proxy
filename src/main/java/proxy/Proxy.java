@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import processors.HttpRequestProcessor;
 import processors.ProxyResponseProcessor;
-import routes.ProxyRouteBuilder;
 import routes.RouteFactory;
 import routes.WebServiceRouteBuilder;
 
@@ -65,6 +64,6 @@ public class Proxy {
         ProxyResponseProcessor proxyResponseProcessor = new ProxyResponseProcessor();
 
         camelContext.addRoutes(new WebServiceRouteBuilder(config, httpRequestProcessor, proxyResponseProcessor));
-        camelContext.addRoutes(new RouteFactory().create(config));
+        camelContext.addRoutes(new RouteFactory().createProxyRouteBuilder(config));
     }
 }

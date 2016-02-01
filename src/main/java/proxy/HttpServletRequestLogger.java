@@ -10,8 +10,8 @@ public class HttpServletRequestLogger {
     final Logger logger = LoggerFactory.getLogger(HttpServletRequestLogger.class);
 
     public void log(HttpServletRequest request, String body) {
-        String logMessage = "Received request:";
-        logMessage += "\nHttp    method: " + request.getMethod();
+        String logMessage = "Received HTTP request:";
+        logMessage += "\nHttp method: " + request.getMethod();
         logMessage += "\nRequest URL: " + request.getRequestURL();
         logMessage += "\nPath header: " + request.getHeader("path");
         logMessage += "\nQuery String: " + request.getQueryString();

@@ -2,12 +2,18 @@ package routes;
 
 
 import config.DilProxyConfig;
+import org.apache.camel.CamelExchangeException;
+import org.apache.camel.Exchange;
+import org.apache.camel.ExchangeTimedOutException;
+import org.apache.camel.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import processors.HttpRequestProcessor;
 import processors.ProxyResponseProcessor;
 import org.apache.camel.builder.RouteBuilder;
+import processors.TimeoutExceptionHandler;
 
+import java.net.ConnectException;
 
 
 public class WebServiceRouteBuilder extends RouteBuilder {
@@ -28,6 +34,11 @@ public class WebServiceRouteBuilder extends RouteBuilder {
     public void configure() throws Exception {
         String fromPath = String.format("jetty:%s?matchOnUriPrefix=true", config.getHostname());
         String toPath = createToPath();
+
+        onException(ExchangeTimedOutException.class, ConnectException.class)
+                .process(new TimeoutExceptionHandler())
+                .handled(true);
+
 
         if (config.useCompression()) {
             from(fromPath)

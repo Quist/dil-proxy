@@ -19,7 +19,6 @@ public class DilProxyConfig {
         proxyHostname = networkConfig.getString("proxyHostname");
         hostname = networkConfig.getString("hostname");
         brokerConnectionUri = networkConfig.getString("brokerConnectionUri");
-
         protocol = setProtocol(proxyConfig.getString("protocol"));
     }
 

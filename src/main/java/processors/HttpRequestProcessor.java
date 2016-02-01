@@ -1,5 +1,7 @@
 package processors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import proxy.HttpServletRequestLogger;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
@@ -10,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 public class HttpRequestProcessor implements Processor {
 
     private static final HttpServletRequestLogger httpServletRequestLogger = new HttpServletRequestLogger();
+    final Logger logger = LoggerFactory.getLogger(HttpServletRequestLogger.class);
 
     public HttpRequestProcessor() {
     }
@@ -20,5 +23,6 @@ public class HttpRequestProcessor implements Processor {
 
         exchange.getIn().setHeader("path", request.getRequestURL());
         httpServletRequestLogger.log(request, null);
+        logger.info("Forwarding request to other proxy");
     }
 }

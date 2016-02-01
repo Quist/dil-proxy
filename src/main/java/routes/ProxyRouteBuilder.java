@@ -4,6 +4,8 @@ import config.DilProxyConfig;
 import processors.HttpResponseProcessor;
 import processors.ProxyRequestProcessor;
 import org.apache.camel.builder.RouteBuilder;
+import processors.TimeoutExceptionHandler;
+import java.net.ConnectException;
 
 public class ProxyRouteBuilder extends RouteBuilder {
 
@@ -16,6 +18,10 @@ public class ProxyRouteBuilder extends RouteBuilder {
     @Override
     public void configure() throws Exception {
         String proxyListenRoute = String.format("jetty:%s/proxy?matchOnUriPrefix=true", config.getHostname());
+
+        onException(ConnectException.class)
+                .process(new TimeoutExceptionHandler())
+                .handled(true);
 
         if (config.useCompression()) {
             from(proxyListenRoute)
