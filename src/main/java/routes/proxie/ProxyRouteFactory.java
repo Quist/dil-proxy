@@ -4,8 +4,6 @@ import config.DilProxyConfig;
 import org.apache.camel.builder.RouteBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import processors.*;
-import routes.RouteHandler;
 import routes.proxie.protocols.AmqpRouteFactory;
 import routes.proxie.protocols.HttpProtocolFactory;
 

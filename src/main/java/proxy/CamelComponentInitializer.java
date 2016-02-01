@@ -8,11 +8,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.net.MalformedURLException;
 
-public class ComponentInitializer {
+public class CamelComponentInitializer {
     private final Logger logger = LoggerFactory.getLogger(HttpRequestLogger.class);
     private final CamelContext camelContext;
 
-    public ComponentInitializer(CamelContext camelContext) {
+    public CamelComponentInitializer(CamelContext camelContext) {
         this.camelContext = camelContext;
     }
 
