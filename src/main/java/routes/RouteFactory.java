@@ -5,6 +5,8 @@ import org.apache.camel.builder.RouteBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import processors.AmqpPreProcessor;
+import processors.HttpRequestProcessor;
+import processors.ProxyResponseProcessor;
 import proxy.HttpServletRequestLogger;
 
 public class RouteFactory {
@@ -18,11 +20,13 @@ public class RouteFactory {
                 return new ProxyRouteBuilder(config);
             default:
                 logger.error("No path configuration for: " + config.getProtocol());
-                throw new IllegalArgumentException("No path configuration for: " + config.getProtocol());
+                throw new IllegalArgumentException("No configuration for: " + config.getProtocol());
         }
     }
 
     public RouteBuilder createWebServiceRouteBuilder(DilProxyConfig config) {
-        return null;
+        HttpRequestProcessor httpRequestProcessor = new HttpRequestProcessor();
+        ProxyResponseProcessor proxyResponseProcessor = new ProxyResponseProcessor();
+        return new WebServiceRouteBuilder(config, httpRequestProcessor, proxyResponseProcessor);
     }
 }

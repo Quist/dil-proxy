@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 
 public class HttpServletRequestLogger {
-    final Logger logger = LoggerFactory.getLogger(HttpServletRequestLogger.class);
+    private final Logger logger = LoggerFactory.getLogger(HttpServletRequestLogger.class);
 
     public void log(HttpServletRequest request, String body) {
         String logMessage = "Received HTTP request:";

@@ -1,11 +1,9 @@
 package routes;
 
 
+import config.AmqpConfig;
 import config.DilProxyConfig;
-import org.apache.camel.CamelExchangeException;
-import org.apache.camel.Exchange;
 import org.apache.camel.ExchangeTimedOutException;
-import org.apache.camel.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import processors.HttpRequestProcessor;
@@ -39,7 +37,6 @@ public class WebServiceRouteBuilder extends RouteBuilder {
                 .process(new TimeoutExceptionHandler())
                 .handled(true);
 
-
         if (config.useCompression()) {
             from(fromPath)
                     .process(httpRequestProcessor)
@@ -60,7 +57,7 @@ public class WebServiceRouteBuilder extends RouteBuilder {
     private String createToPath() {
         switch (config.getProtocol()) {
             case AMQP:
-                return constructAmqpToPath();
+                return constructAmqpToPath(config.getAmqpConfig());
             case HTTP:
                 return constructHttpToPath();
             default:
@@ -73,8 +70,7 @@ public class WebServiceRouteBuilder extends RouteBuilder {
         return String.format("jetty:%s/proxy?bridgeEndpoint=true", config.getProxyHostname());
     }
 
-    private String constructAmqpToPath() {
-        String toPath = String.format("amqp:topic:notify");
-        return toPath;
+    private String constructAmqpToPath(AmqpConfig amqpConfig) {
+        return String.format("amqp:queue:" + amqpConfig.getProduceQueue());
     }
 }

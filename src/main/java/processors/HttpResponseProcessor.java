@@ -13,6 +13,6 @@ public class HttpResponseProcessor implements Processor {
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        logger.info("Received response from Web service. Forwarding response to the other proxy");
+        logger.info("Received response from Web service. Forwarding response to the proxy");
     }
 }

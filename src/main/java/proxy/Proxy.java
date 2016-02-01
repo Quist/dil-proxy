@@ -43,8 +43,10 @@ public class Proxy {
     }
 
     public void start()  {
+        ComponentInitializer componentInitializer = new ComponentInitializer(camelContext);
+
         try {
-            addComponents();
+            componentInitializer.init(config);
             addRoutes(config);
             camelContext.start();
             logger.info("Proxy started and listening on " + config.getHostname());
@@ -53,17 +55,10 @@ public class Proxy {
         }
     }
 
-    private void addComponents() throws MalformedURLException {
-        logger.info("Adding AMQP component with broker connection URI: " + config.getBrokerConnectionUri());
-        AMQPComponent amqp = AMQPComponent.amqp10Component(config.getBrokerConnectionUri());
-        camelContext.addComponent("amqp", amqp);
-    }
-
     private void addRoutes(DilProxyConfig config) throws Exception {
-        HttpRequestProcessor httpRequestProcessor = new HttpRequestProcessor();
-        ProxyResponseProcessor proxyResponseProcessor = new ProxyResponseProcessor();
+        RouteFactory routeFactory = new RouteFactory();
 
-        camelContext.addRoutes(new WebServiceRouteBuilder(config, httpRequestProcessor, proxyResponseProcessor));
-        camelContext.addRoutes(new RouteFactory().createProxyRouteBuilder(config));
+        camelContext.addRoutes(routeFactory.createWebServiceRouteBuilder(config));
+        camelContext.addRoutes(routeFactory.createProxyRouteBuilder(config));
     }
 }

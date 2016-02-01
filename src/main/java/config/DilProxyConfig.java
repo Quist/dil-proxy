@@ -8,18 +8,18 @@ public class DilProxyConfig {
     private final String hostname;
     private final String proxyHostname;
     private final Protocol protocol;
-    private final String brokerConnectionUri;
+    private final AmqpConfig amqpConfig;
 
     public DilProxyConfig(Config config) {
         Config proxyConfig = config.getConfig("proxy");
         Config networkConfig = config.getConfig("network");
 
         useCompression = proxyConfig.getBoolean("useCompression");
-
         proxyHostname = networkConfig.getString("proxyHostname");
         hostname = networkConfig.getString("hostname");
-        brokerConnectionUri = networkConfig.getString("brokerConnectionUri");
         protocol = setProtocol(proxyConfig.getString("protocol"));
+
+        this.amqpConfig = new AmqpConfig(config.getConfig("amqp"));
     }
 
     public boolean useCompression() {
@@ -38,8 +38,8 @@ public class DilProxyConfig {
         return protocol;
     }
 
-    public String getBrokerConnectionUri() {
-        return brokerConnectionUri;
+    public AmqpConfig getAmqpConfig() {
+        return amqpConfig;
     }
 
     private Protocol setProtocol(String protocol) {

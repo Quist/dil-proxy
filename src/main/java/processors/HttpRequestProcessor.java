@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 public class HttpRequestProcessor implements Processor {
 
     private static final HttpServletRequestLogger httpServletRequestLogger = new HttpServletRequestLogger();
-    final Logger logger = LoggerFactory.getLogger(HttpServletRequestLogger.class);
+    final Logger logger = LoggerFactory.getLogger(HttpRequestProcessor.class);
 
     public HttpRequestProcessor() {
     }
@@ -23,6 +23,6 @@ public class HttpRequestProcessor implements Processor {
 
         exchange.getIn().setHeader("path", request.getRequestURL());
         httpServletRequestLogger.log(request, null);
-        logger.info("Forwarding request to other proxy");
+        logger.info("Forwarding request to proxy");
     }
 }

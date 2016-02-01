@@ -10,6 +10,6 @@ public class ProxyResponseProcessor implements Processor{
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        logger.info("Received HTTP response from other proxy");
+        logger.info("Received response from other proxy");
     }
 }
