@@ -1,11 +1,11 @@
-package routes.proxie.protocols;
+package routing.protocols;
 
 import config.DilProxyConfig;
 import org.apache.camel.builder.RouteBuilder;
 import processors.AmqpRequestProcessor;
 import processors.WebServiceResponseProcessor;
-import routes.RouteHandler;
-import routes.proxie.ProxyRouteBuilder;
+import routing.RouteHandler;
+import routing.builders.ProxyRouteBuilder;
 
 public class AmqpRouteFactory implements ProtocolFactory {
 

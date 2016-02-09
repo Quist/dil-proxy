@@ -2,14 +2,16 @@ package proxy;
 
 import com.typesafe.config.ConfigFactory;
 import config.DilProxyConfig;
+import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import routes.proxie.ProxyRouteFactory;
-import routes.proxie.protocols.AmqpRouteFactory;
-import routes.proxie.protocols.HttpRouteFactory;
-import routes.proxie.protocols.ProtocolFactory;
-import routes.webservice.WebServiceRouteFactory;
+import routing.ProxyRouteFactory;
+import routing.protocols.AmqpRouteFactory;
+import routing.protocols.HttpRouteFactory;
+import routing.protocols.MqttRouteFactory;
+import routing.protocols.ProtocolFactory;
+import routing.WebServiceRouteFactory;
 
 
 public class Proxy {
@@ -47,7 +49,7 @@ public class Proxy {
     public void start()  {
         try {
             camelComponentInitializer.init(config);
-            addRoutes(config);
+            addRoutes();
             camelContext.start();
             logger.info("Proxy started and listening on " + config.getHostname());
         } catch (Exception e) {
@@ -55,11 +57,19 @@ public class Proxy {
         }
     }
 
-    private void addRoutes(DilProxyConfig config) throws Exception {
-        WebServiceRouteFactory webServiceRouteFactory = new WebServiceRouteFactory();
-        ProxyRouteFactory proxyRouteFactory = new ProxyRouteFactory();
+    private void addRoutes() throws Exception {
+        addIncomingWebServiceRequestRoute();
+        addBetweenProxiesRoute();
+    }
 
-        camelContext.addRoutes(webServiceRouteFactory.createWebServiceRouteBuilder(config, createProtocolFactory()));
+    private void addIncomingWebServiceRequestRoute() throws Exception {
+        WebServiceRouteFactory webServiceRouteFactory = new WebServiceRouteFactory(config);
+        RouteBuilder webServiceRequestRoute = webServiceRouteFactory.create(createProtocolFactory());
+        camelContext.addRoutes(webServiceRequestRoute);
+    }
+
+    private void addBetweenProxiesRoute() throws Exception {
+        ProxyRouteFactory proxyRouteFactory = new ProxyRouteFactory();
         camelContext.addRoutes(proxyRouteFactory.createProxyRouteBuilder(config));
     }
 

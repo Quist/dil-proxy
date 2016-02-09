@@ -1,54 +1,50 @@
-package routes.webservice;
+package routing.builders;
 
 import config.DilProxyConfig;
-import org.apache.camel.ExchangeTimedOutException;
 import org.apache.camel.builder.RouteBuilder;
 import processors.TimeoutExceptionHandler;
-import routes.RouteHandler;
+import routing.RouteHandler;
 
 import java.net.ConnectException;
 
+public class ProxyRouteBuilder extends RouteBuilder {
 
-public class WebServiceRouteBuilder extends RouteBuilder {
-    private final RouteHandler routeHandler;
     private final DilProxyConfig config;
-    private final String toUri;
+    private final RouteHandler routeHandler;
+    private final String listenUri;
 
-    public WebServiceRouteBuilder(DilProxyConfig config, RouteHandler routeHandler, String toUri) {
+    public ProxyRouteBuilder(DilProxyConfig config, RouteHandler routeHandler, String listenUri) {
         this.config = config;
         this.routeHandler = routeHandler;
-        this.toUri = toUri;
+        this.listenUri = listenUri;
     }
 
     @Override
     public void configure() throws Exception {
-        String fromPath = getFromPath();
 
         setupExceptionHandling();
 
         if (config.useCompression()) {
-            from(fromPath)
+            from(listenUri)
                     .process(routeHandler.getRequestProcessor())
-                    .marshal()
-                    .gzip()
-                    .to(toUri)
-                    .process(routeHandler.getResponseProcessor())
                     .unmarshal()
+                    .gzip()
+                    .removeHeaders("CamelHttp*")
+                    .toD("${header.path}" + "?bridgeEndpoint=true")
+                    .process(routeHandler.getResponseProcessor())
+                    .marshal()
                     .gzip();
         } else {
-            from(fromPath)
+            from(listenUri)
                     .process(routeHandler.getRequestProcessor())
-                    .to(toUri)
+                    .removeHeaders("CamelHttp*")
+                    .toD("${header.path}" + "?bridgeEndpoint=true")
                     .process(routeHandler.getResponseProcessor());
         }
     }
 
-    private String getFromPath() {
-        return String.format("jetty:%s?matchOnUriPrefix=true", config.getHostname());
-    }
-
     private void setupExceptionHandling() {
-        onException(ExchangeTimedOutException.class, ConnectException.class)
+        onException(ConnectException.class)
                 .process(new TimeoutExceptionHandler())
                 .handled(true);
     }

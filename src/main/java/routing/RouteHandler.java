@@ -1,4 +1,4 @@
-package routes;
+package routing;
 
 import org.apache.camel.Processor;
 

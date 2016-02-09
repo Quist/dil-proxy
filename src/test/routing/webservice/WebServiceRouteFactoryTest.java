@@ -1,14 +1,13 @@
-package routes.webservice;
+package routing.webservice;
 
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import config.AmqpConfig;
 import config.DilProxyConfig;
 import org.apache.camel.builder.RouteBuilder;
 import org.junit.Test;
 import proxy.Protocol;
-import routes.proxie.protocols.AmqpRouteFactory;
-import routes.proxie.protocols.ProtocolFactory;
+import routing.WebServiceRouteFactory;
+import routing.protocols.AmqpRouteFactory;
+import routing.protocols.ProtocolFactory;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
@@ -24,14 +23,14 @@ public class WebServiceRouteFactoryTest {
     public void testCreateWebServiceRouteBuilder() throws Exception {
         DilProxyConfig config = mock(DilProxyConfig.class);
         AmqpConfig amqpConfig = mock(AmqpConfig.class);
-        WebServiceRouteFactory factory = new WebServiceRouteFactory();
+        WebServiceRouteFactory factory = new WebServiceRouteFactory(config);
         ProtocolFactory protocolFactory = new AmqpRouteFactory(config);
 
         when(config.getProtocol()).thenReturn(Protocol.AMQP);
         when(config.getAmqpConfig()).thenReturn(amqpConfig);
         when(amqpConfig.getConsumeQueue()).thenReturn("1001");
 
-        RouteBuilder route = factory.createWebServiceRouteBuilder(config, protocolFactory);
+        RouteBuilder route = factory.create(protocolFactory);
 
         assertThat(route, is(notNullValue()));
     }

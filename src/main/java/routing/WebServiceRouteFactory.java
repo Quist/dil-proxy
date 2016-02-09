@@ -1,15 +1,22 @@
-package routes.webservice;
+package routing;
 
 import config.DilProxyConfig;
 import org.apache.camel.builder.RouteBuilder;
-import processors.HttpResponseProcessor;
+import processors.ResponseProcessor;
 import processors.WebServiceRequestProcessor;
-import routes.RouteHandler;
-import routes.proxie.protocols.ProtocolFactory;
+import routing.RouteHandler;
+import routing.builders.WebServiceRouteBuilder;
+import routing.protocols.ProtocolFactory;
 
 public class WebServiceRouteFactory {
 
-    public RouteBuilder createWebServiceRouteBuilder(DilProxyConfig config, ProtocolFactory protocolFactory) {
+    private final DilProxyConfig config;
+
+    public WebServiceRouteFactory(DilProxyConfig config) {
+        this.config = config;
+    }
+
+    public RouteBuilder create(ProtocolFactory protocolFactory) {
         RouteHandler routeHandler = getRouteHandler();
         String toUri = protocolFactory.getToUri();
 
@@ -18,7 +25,7 @@ public class WebServiceRouteFactory {
 
     private RouteHandler getRouteHandler() {
         WebServiceRequestProcessor requestProcessor = new WebServiceRequestProcessor();
-        HttpResponseProcessor responseProcessor = new HttpResponseProcessor();
+        ResponseProcessor responseProcessor = new ResponseProcessor();
 
         return new RouteHandler(requestProcessor, responseProcessor);
     }

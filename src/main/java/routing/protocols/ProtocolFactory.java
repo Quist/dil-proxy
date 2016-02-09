@@ -1,4 +1,4 @@
-package routes.proxie.protocols;
+package routing.protocols;
 
 import org.apache.camel.builder.RouteBuilder;
 

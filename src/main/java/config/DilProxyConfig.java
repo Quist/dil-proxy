@@ -9,6 +9,7 @@ public class DilProxyConfig {
     private final String proxyHostname;
     private final Protocol protocol;
     private final AmqpConfig amqpConfig;
+    private final MqttConfig mqttConfig;
 
     public DilProxyConfig(Config config) {
         Config proxyConfig = config.getConfig("proxy");
@@ -20,6 +21,7 @@ public class DilProxyConfig {
         protocol = setProtocol(proxyConfig.getString("protocol"));
 
         this.amqpConfig = new AmqpConfig(config.getConfig("amqp"));
+        this.mqttConfig = new MqttConfig(config.getConfig("mqtt"));
     }
 
     public boolean useCompression() {
@@ -40,6 +42,10 @@ public class DilProxyConfig {
 
     public AmqpConfig getAmqpConfig() {
         return amqpConfig;
+    }
+
+    public MqttConfig getMqttConfig() {
+        return mqttConfig;
     }
 
     private Protocol setProtocol(String protocol) {
