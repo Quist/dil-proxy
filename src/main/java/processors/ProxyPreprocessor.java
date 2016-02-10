@@ -11,6 +11,7 @@ public class ProxyPreprocessor implements Processor {
     @Override
     public void process(Exchange exchange) throws Exception {
         HttpServletRequest req = exchange.getIn(HttpMessage.class).getRequest();
+        exchange.getIn().setHeader("path", req.getRequestURL());
         String headers = "{\"path\":\"" + req.getRequestURL() + "\"}";
         String body = exchange.getIn().getBody(String.class);
         body = headers + body;

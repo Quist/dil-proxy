@@ -20,8 +20,6 @@ public class WebServiceRequestProcessor implements Processor {
     @Override
     public void process(Exchange exchange) throws Exception {
         HttpServletRequest request = exchange.getIn(HttpMessage.class).getRequest();
-
-        exchange.getIn().setHeader("path", request.getRequestURL());
         HTTP_REQUEST_LOGGER.log(request, null);
         logger.info("Forwarding request to proxy");
     }
