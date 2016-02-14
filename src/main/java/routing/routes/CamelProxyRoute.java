@@ -1,21 +1,21 @@
-package routing.builders;
+package routing.routes;
 
 import config.DilProxyConfig;
 import org.apache.camel.builder.RouteBuilder;
 import processors.TimeoutExceptionHandler;
-import routing.RouteHandler;
+import routing.RouteProcessorContainer;
 
 import java.net.ConnectException;
 
-public class ProxyRouteBuilder extends RouteBuilder {
+public class CamelProxyRoute extends RouteBuilder {
 
     private final DilProxyConfig config;
-    private final RouteHandler routeHandler;
+    private final RouteProcessorContainer routeProcessorContainer;
     private final String listenUri;
 
-    public ProxyRouteBuilder(DilProxyConfig config, RouteHandler routeHandler, String listenUri) {
+    public CamelProxyRoute(DilProxyConfig config, RouteProcessorContainer routeProcessorContainer, String listenUri) {
         this.config = config;
-        this.routeHandler = routeHandler;
+        this.routeProcessorContainer = routeProcessorContainer;
         this.listenUri = listenUri;
     }
 
@@ -26,20 +26,20 @@ public class ProxyRouteBuilder extends RouteBuilder {
 
         if (config.useCompression()) {
             from(listenUri)
-                    .process(routeHandler.getRequestProcessor())
+                    .process(routeProcessorContainer.getRequestProcessor())
                     .unmarshal()
                     .gzip()
                     .removeHeaders("CamelHttp*")
                     .toD("${header.path}" + "?bridgeEndpoint=true")
-                    .process(routeHandler.getResponseProcessor())
+                    .process(routeProcessorContainer.getResponseProcessor())
                     .marshal()
                     .gzip();
         } else {
             from(listenUri)
-                    .process(routeHandler.getRequestProcessor())
+                    .process(routeProcessorContainer.getRequestProcessor())
                     .removeHeaders("CamelHttp*")
                     .toD("${header.path}" + "?bridgeEndpoint=true")
-                    .process(routeHandler.getResponseProcessor());
+                    .process(routeProcessorContainer.getResponseProcessor());
         }
     }
 

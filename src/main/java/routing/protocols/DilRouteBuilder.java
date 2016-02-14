@@ -2,7 +2,7 @@ package routing.protocols;
 
 import org.apache.camel.builder.RouteBuilder;
 
-public interface ProtocolFactory {
+public interface DilRouteBuilder {
     String getToUri();
     String getListenUri();
     RouteBuilder create();

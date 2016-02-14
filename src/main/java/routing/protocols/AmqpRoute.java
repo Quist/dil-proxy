@@ -7,11 +7,11 @@ import processors.WebServiceResponseProcessor;
 import routing.RouteHandler;
 import routing.builders.ProxyRouteBuilder;
 
-public class AmqpRouteFactory implements ProtocolFactory {
+public class AmqpRoute implements DilRouteBuilder {
 
     private final DilProxyConfig config;
 
-    public AmqpRouteFactory(DilProxyConfig config) {
+    public AmqpRoute(DilProxyConfig config) {
         this.config = config;
     }
 

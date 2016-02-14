@@ -1,4 +1,4 @@
-package proxy;
+package proxy.serializer;
 
 import org.json.JSONObject;
 

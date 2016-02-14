@@ -70,14 +70,14 @@ public class Proxy {
         camelContext.addRoutes(proxyRouteFactory.createProxyRouteBuilder(config));
     }
 
-    private ProtocolFactory createProtocolFactory() {
+    private DilRouteBuilder createProtocolFactory() {
         switch (config.getProtocol()) {
             case AMQP:
-                return new AmqpRouteFactory(config);
+                return new AmqpRoute(config);
             case HTTP:
-                return new HttpRouteFactory(config);
+                return new HttpRoute(config);
             case MQTT:
-                return new MqttRouteFactory(config);
+                return new MqttRoute(config);
             case COAP:
                 return new CoapRoute(config);
             default:

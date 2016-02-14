@@ -7,11 +7,11 @@ import processors.WebServiceResponseProcessor;
 import routing.RouteHandler;
 import routing.builders.ProxyRouteBuilder;
 
-public class HttpRouteFactory implements ProtocolFactory {
+public class HttpRoute implements DilRouteBuilder {
 
     private final DilProxyConfig config;
 
-    public HttpRouteFactory(DilProxyConfig config) {
+    public HttpRoute(DilProxyConfig config) {
         this.config = config;
     }
 
