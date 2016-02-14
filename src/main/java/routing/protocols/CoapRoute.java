@@ -17,12 +17,12 @@ public class CoapRoute implements ProtocolFactory {
 
     @Override
     public String getToUri() {
-        return "coap:test";
+        return "coap:" + config.getProxyHostname();
     }
 
     @Override
     public String getListenUri() {
-        return "coap:test";
+        return "coap:" + config.getHostname();
     }
 
     @Override

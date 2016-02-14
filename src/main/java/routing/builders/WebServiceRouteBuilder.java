@@ -47,7 +47,7 @@ public class WebServiceRouteBuilder extends RouteBuilder {
     }
 
     private String getFromPath() {
-        return String.format("jetty:%s?matchOnUriPrefix=true", config.getHostname());
+        return String.format("jetty:http://%s?matchOnUriPrefix=true", config.getHostname());
     }
 
     private void setupExceptionHandling() {

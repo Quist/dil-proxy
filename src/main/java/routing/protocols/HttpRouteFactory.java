@@ -17,12 +17,12 @@ public class HttpRouteFactory implements ProtocolFactory {
 
     @Override
     public String getToUri() {
-        return String.format("jetty:%s/proxy?bridgeEndpoint=true", config.getProxyHostname());
+        return String.format("jetty:http://%s/proxy?bridgeEndpoint=true", config.getProxyHostname());
     }
 
     @Override
     public String getListenUri() {
-        return String.format("jetty:%s/proxy?matchOnUriPrefix=true", config.getHostname());
+        return String.format("jetty:http://%s/proxy?matchOnUriPrefix=true", config.getHostname());
     }
 
     @Override
