@@ -7,10 +7,7 @@ import org.apache.camel.impl.DefaultCamelContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import routing.ProxyRouteFactory;
-import routing.protocols.AmqpRouteFactory;
-import routing.protocols.HttpRouteFactory;
-import routing.protocols.MqttRouteFactory;
-import routing.protocols.ProtocolFactory;
+import routing.protocols.*;
 import routing.WebServiceRouteFactory;
 
 
@@ -81,6 +78,8 @@ public class Proxy {
                 return new HttpRouteFactory(config);
             case MQTT:
                 return new MqttRouteFactory(config);
+            case COAP:
+                return new CoapRoute(config);
             default:
                 logger.error("No configuration for: " + config.getProtocol());
                 throw new IllegalArgumentException("No configuration for: " + config.getProtocol());

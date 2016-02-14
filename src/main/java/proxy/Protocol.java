@@ -1,5 +1,5 @@
 package proxy;
 
 public enum Protocol {
-    HTTP, MQTT, AMQP
+    HTTP, MQTT, AMQP, COAP
 }

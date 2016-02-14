@@ -59,6 +59,9 @@ public class DilProxyConfig {
             case "mqtt": {
                 return Protocol.MQTT;
             }
+            case "coap": {
+                return Protocol.COAP;
+            }
             default: {
                 throw  new IllegalArgumentException("Unsupported protocol: " + protocol);
             }
