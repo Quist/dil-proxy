@@ -1,6 +1,8 @@
 package proxy;
 
 import org.junit.Test;
+import proxy.serializer.ProxyPayload;
+import proxy.serializer.ProxyPayloadDeserializer;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;

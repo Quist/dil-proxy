@@ -5,7 +5,6 @@ import config.DilProxyConfig;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

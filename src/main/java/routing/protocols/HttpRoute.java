@@ -4,8 +4,8 @@ import config.DilProxyConfig;
 import org.apache.camel.builder.RouteBuilder;
 import processors.HttpRequestProcessor;
 import processors.WebServiceResponseProcessor;
-import routing.RouteHandler;
-import routing.builders.ProxyRouteBuilder;
+import routing.RouteProcessorContainer;
+import routing.routes.CamelProxyRoute;
 
 public class HttpRoute implements DilRouteBuilder {
 
@@ -27,8 +27,8 @@ public class HttpRoute implements DilRouteBuilder {
 
     @Override
     public RouteBuilder create() {
-        RouteHandler routeHandler = new RouteHandler(new HttpRequestProcessor(), new WebServiceResponseProcessor());
+        RouteProcessorContainer routeProcessorContainer = new RouteProcessorContainer(new HttpRequestProcessor(), new WebServiceResponseProcessor());
         String listenUri = getListenUri();
-        return new ProxyRouteBuilder(config, routeHandler, listenUri);
+        return new CamelProxyRoute(config, routeProcessorContainer, listenUri);
     }
 }

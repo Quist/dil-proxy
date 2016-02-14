@@ -7,6 +7,8 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.component.amqp.AMQPComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.HttpRequestLogger;
+
 import java.net.MalformedURLException;
 
 public class CamelComponentInitializer {

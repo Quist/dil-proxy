@@ -4,11 +4,10 @@ import config.DilProxyConfig;
 import org.apache.camel.builder.RouteBuilder;
 import processors.AmqpRequestProcessor;
 import processors.WebServiceResponseProcessor;
-import routing.RouteHandler;
-import routing.builders.ProxyRouteBuilder;
-import routing.protocols.ProtocolFactory;
+import routing.RouteProcessorContainer;
+import routing.routes.CamelProxyRoute;
 
-public class CoapRoute implements ProtocolFactory {
+public class CoapRoute implements DilRouteBuilder {
     private DilProxyConfig config;
 
     public CoapRoute(DilProxyConfig config) {
@@ -27,7 +26,7 @@ public class CoapRoute implements ProtocolFactory {
 
     @Override
     public RouteBuilder create() {
-        RouteHandler routeHandler = new RouteHandler(new AmqpRequestProcessor(), new WebServiceResponseProcessor());
-        return new ProxyRouteBuilder(config, routeHandler, getListenUri());
+        RouteProcessorContainer routeProcessorContainer = new RouteProcessorContainer(new AmqpRequestProcessor(), new WebServiceResponseProcessor());
+        return new CamelProxyRoute(config, routeProcessorContainer, getListenUri());
     }
 }

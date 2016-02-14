@@ -2,7 +2,7 @@ package processors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import proxy.HttpRequestLogger;
+import util.HttpRequestLogger;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.http.common.HttpMessage;

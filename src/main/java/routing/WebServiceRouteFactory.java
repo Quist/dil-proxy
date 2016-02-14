@@ -4,9 +4,8 @@ import config.DilProxyConfig;
 import org.apache.camel.builder.RouteBuilder;
 import processors.ResponseProcessor;
 import processors.WebServiceRequestProcessor;
-import routing.RouteHandler;
-import routing.builders.WebServiceRouteBuilder;
-import routing.protocols.ProtocolFactory;
+import routing.routes.CamelWebServiceRoute;
+import routing.protocols.DilRouteBuilder;
 
 public class WebServiceRouteFactory {
 
@@ -16,17 +15,17 @@ public class WebServiceRouteFactory {
         this.config = config;
     }
 
-    public RouteBuilder create(ProtocolFactory protocolFactory) {
-        RouteHandler routeHandler = getRouteHandler();
-        String toUri = protocolFactory.getToUri();
+    public RouteBuilder create(DilRouteBuilder dilRouteBuilder) {
+        RouteProcessorContainer routeProcessorContainer = getRouteProcessors();
+        String toUri = dilRouteBuilder.getToUri();
 
-        return new WebServiceRouteBuilder(config, routeHandler, toUri);
+        return new CamelWebServiceRoute(config, routeProcessorContainer, toUri);
     }
 
-    private RouteHandler getRouteHandler() {
+    private RouteProcessorContainer getRouteProcessors() {
         WebServiceRequestProcessor requestProcessor = new WebServiceRequestProcessor();
         ResponseProcessor responseProcessor = new ResponseProcessor();
 
-        return new RouteHandler(requestProcessor, responseProcessor);
+        return new RouteProcessorContainer(requestProcessor, responseProcessor);
     }
 }

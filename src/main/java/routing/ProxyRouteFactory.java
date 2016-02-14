@@ -5,9 +5,9 @@ import org.apache.camel.builder.RouteBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import routing.protocols.CoapRoute;
-import routing.protocols.MqttRouteFactory;
-import routing.protocols.AmqpRouteFactory;
-import routing.protocols.HttpRouteFactory;
+import routing.protocols.MqttRoute;
+import routing.protocols.AmqpRoute;
+import routing.protocols.HttpRoute;
 
 /**
  * Creates routes between the proxy pair.
@@ -36,14 +36,14 @@ public class ProxyRouteFactory {
     }
 
     private RouteBuilder createMqttRoute(DilProxyConfig config) {
-        return new MqttRouteFactory(config).create();
+        return new MqttRoute(config).create();
     }
 
     private RouteBuilder createAmqpRoute(DilProxyConfig config) {
-        return new AmqpRouteFactory(config).create();
+        return new AmqpRoute(config).create();
     }
 
     private RouteBuilder createHttpRoute(DilProxyConfig config) {
-        return new HttpRouteFactory(config).create();
+        return new HttpRoute(config).create();
     }
 }
