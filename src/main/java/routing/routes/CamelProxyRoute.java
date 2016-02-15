@@ -2,6 +2,7 @@ package routing.routes;
 
 import config.DilProxyConfig;
 import org.apache.camel.builder.RouteBuilder;
+import processors.ProxyPostProcessor;
 import processors.TimeoutExceptionHandler;
 import routing.RouteProcessorContainer;
 
@@ -37,6 +38,7 @@ public class CamelProxyRoute extends RouteBuilder {
         } else {
             from(listenUri)
                     .process(routeProcessorContainer.getRequestProcessor())
+                    .process(new ProxyPostProcessor())
                     .removeHeaders("CamelHttp*")
                     .toD("${header.path}" + "?bridgeEndpoint=true")
                     .process(routeProcessorContainer.getResponseProcessor());

@@ -2,6 +2,7 @@ package proxy;
 
 import coap.CoapComponent;
 import config.AmqpConfig;
+import config.CoapConfig;
 import config.DilProxyConfig;
 import org.apache.camel.CamelContext;
 import org.apache.camel.component.amqp.AMQPComponent;
@@ -20,21 +21,25 @@ public class CamelComponentInitializer {
     }
 
     public void init(DilProxyConfig config) throws MalformedURLException {
-        CoapComponent coap = new CoapComponent();
-        camelContext.addComponent("coap", coap);
 
         switch (config.getProtocol()) {
             case AMQP:
                 addAmqpComponent(config.getAmqpConfig());
+                break;
+            case COAP:
+                addCoapComponent(config.getCoapConfig());
+                break;
         }
+    }
+
+    private void addCoapComponent(CoapConfig config) {
+        CoapComponent coap = new CoapComponent(config.getListenPort());
+        camelContext.addComponent("coap", coap);
     }
 
     private void addAmqpComponent(AmqpConfig config) throws MalformedURLException {
         logger.info("Adding AMQP component with broker connection URI: " + config.getBrokerConnectionUri());
         AMQPComponent amqp = AMQPComponent.amqp10Component(config.getBrokerConnectionUri());
         camelContext.addComponent("amqp", amqp);
-
-        CoapComponent coap = new CoapComponent();
-        camelContext.addComponent("coap", coap);
     }
 }

@@ -1,4 +1,4 @@
-package processors;
+package processors.protocols;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
@@ -7,12 +7,12 @@ import org.slf4j.LoggerFactory;
 import proxy.serializer.ProxyPayload;
 import proxy.serializer.ProxyPayloadDeserializer;
 
-public class MqttRequestProcessor implements Processor {
+public class MqttRequest implements Processor {
     private final ProxyPayloadDeserializer deserializer;
 
-    private final Logger logger = LoggerFactory.getLogger(MqttRequestProcessor.class);
+    private final Logger logger = LoggerFactory.getLogger(MqttRequest.class);
 
-    public MqttRequestProcessor() {
+    public MqttRequest() {
         this.deserializer = new ProxyPayloadDeserializer();
     }
 
@@ -24,6 +24,5 @@ public class MqttRequestProcessor implements Processor {
         exchange.getIn().setBody(payload.getBody());
         exchange.getIn().setHeader("path", payload.getPath());
     }
-
 
 }

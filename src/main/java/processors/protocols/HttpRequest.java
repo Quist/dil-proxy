@@ -1,4 +1,4 @@
-package processors;
+package processors.protocols;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,8 +9,8 @@ import org.apache.camel.http.common.HttpMessage;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class HttpRequestProcessor implements Processor {
-    final Logger logger = LoggerFactory.getLogger(HttpRequestProcessor.class);
+public class HttpRequest implements Processor {
+    final Logger logger = LoggerFactory.getLogger(HttpRequest.class);
     private HttpRequestLogger httpRequestLogger = new HttpRequestLogger();
 
     @Override

@@ -2,7 +2,7 @@ package routing.protocols;
 
 import config.DilProxyConfig;
 import org.apache.camel.builder.RouteBuilder;
-import processors.AmqpRequestProcessor;
+import processors.protocols.AmqpRequest;
 import processors.WebServiceResponseProcessor;
 import routing.RouteProcessorContainer;
 import routing.routes.CamelProxyRoute;
@@ -27,7 +27,7 @@ public class AmqpRoute implements DilRouteBuilder {
 
     @Override
     public RouteBuilder create() {
-        RouteProcessorContainer routeProcessorContainer = new RouteProcessorContainer(new AmqpRequestProcessor(), new WebServiceResponseProcessor());
+        RouteProcessorContainer routeProcessorContainer = new RouteProcessorContainer(new AmqpRequest(), new WebServiceResponseProcessor());
         return new CamelProxyRoute(config, routeProcessorContainer, getListenUri());
     }
 }
