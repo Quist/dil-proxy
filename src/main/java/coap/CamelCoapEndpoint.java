@@ -5,10 +5,13 @@ import org.apache.camel.Processor;
 import org.apache.camel.Producer;
 import org.apache.camel.impl.DefaultEndpoint;
 
-public class CoapEndpoint extends DefaultEndpoint {
+public class CamelCoapEndpoint extends DefaultEndpoint {
 
-    public CoapEndpoint(String uri, CoapComponent coapComponent) {
+    private final int port;
+
+    public CamelCoapEndpoint(String uri, CoapComponent coapComponent, int port) {
         super(uri, coapComponent);
+        this.port = port;
     }
 
     @Override
@@ -18,7 +21,7 @@ public class CoapEndpoint extends DefaultEndpoint {
 
     @Override
     public Consumer createConsumer(Processor processor) throws Exception {
-        return new CoapConsumer(this, processor);
+        return new CoapConsumer(this, port, processor);
     }
 
     @Override
