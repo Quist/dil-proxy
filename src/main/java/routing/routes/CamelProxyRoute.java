@@ -39,7 +39,6 @@ public class CamelProxyRoute extends RouteBuilder {
             from(listenUri)
                     .process(routeProcessorContainer.getRequestProcessor())
                     .process(new ProxyPostProcessor())
-                    .removeHeaders("CamelHttp*")
                     .toD("${header.path}" + "?bridgeEndpoint=true")
                     .process(routeProcessorContainer.getResponseProcessor());
         }
