@@ -22,32 +22,12 @@ public class CoapConsumer extends EventDrivenPollingConsumer {
     }
 
     @Override
-    public Exchange receive() {
-        System.out.println("FIKK MELDING");
-        return null;
-    }
-
-    @Override
-    public Exchange receiveNoWait() {
-        System.out.println("SUP, im receiving no wait.");
-
-        return null;
-    }
-
-    @Override
-    public Exchange receive(long l) {
-        System.out.println("SUP, im receiving.");
-        return null;
-    }
-
-    @Override
     protected void doStart() throws Exception {
         System.out.println("Starter opp!");
         CoapServer server = new CoapServer();
         addEndpoint(server);
         server.add(new MyResource("test", endpoint, processor));
         server.start();
-
     }
 
     @Override

@@ -5,9 +5,11 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.server.resources.CoapExchange;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-
-public class MyResource extends CoapResource{
+public class MyResource extends CoapResource {
+    private final Logger logger = LoggerFactory.getLogger(MyResource.class);
 
     private final Endpoint endpoint;
     private final Processor processor;
@@ -19,18 +21,27 @@ public class MyResource extends CoapResource{
     }
 
     @Override
-    public void handlePOST(CoapExchange coapExchange) {
-        System.out.println("Wazzup!");
-        String body = new String(coapExchange.getRequestPayload());
-        System.out.println("Body: " + body);
+    public void handleRequest(org.eclipse.californium.core.network.Exchange exchange) {
+        logger.info("Received Coap request. Converting to camel exchange.");
+        CoapExchange coapExchange = new CoapExchange(exchange, this);
+        Exchange camelExchange = convertExchange(coapExchange);
 
-        Exchange camelExchange = endpoint.createExchange();
-        camelExchange.getIn().setBody(body);
         try {
             processor.process(camelExchange);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //exchange.respond("HELLO WORLD");
+
+        String body = camelExchange.getIn().getBody(String.class);
+        coapExchange.respond(body);
+    }
+
+    private Exchange convertExchange(CoapExchange coapExchange) {
+        Exchange camelExchange = endpoint.createExchange();
+
+        String body = new String(coapExchange.getRequestPayload());
+        camelExchange.getIn().setBody(body);
+        camelExchange.getIn().setHeader(Exchange.HTTP_METHOD, "GET");
+        return camelExchange;
     }
 }
