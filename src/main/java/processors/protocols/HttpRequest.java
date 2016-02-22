@@ -11,13 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 
 public class HttpRequest implements Processor {
     final Logger logger = LoggerFactory.getLogger(HttpRequest.class);
-    private HttpRequestLogger httpRequestLogger = new HttpRequestLogger();
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        logger.info("Received an incoming proxy message from the other proxy.");
-        HttpServletRequest req = exchange.getIn(HttpMessage.class).getRequest();
-        httpRequestLogger.log(req, null);
-        logger.info("Forwarding request to Web service.");
+        logger.info("Received an incoming HTTP request message from the other proxy.");
     }
 }

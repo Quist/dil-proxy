@@ -57,7 +57,7 @@ public class DilProxyConfig {
 
     public MqttConfig getMqttConfig() {
         if ( ! mqttConfig.isPresent()) {
-            throw  new IllegalArgumentException("No protocol configuration for AMQP");
+            throw  new IllegalArgumentException("No protocol configuration for MQTT");
         }
         return mqttConfig.get();
     }

@@ -2,23 +2,24 @@ package routing.routes;
 
 import config.DilProxyConfig;
 import org.apache.camel.ExchangeTimedOutException;
+import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.model.RouteDefinition;
 import processors.ProxyPreprocessor;
+import processors.ResponseProcessor;
 import processors.TimeoutExceptionHandler;
-import routing.RouteProcessorContainer;
+import routing.protocols.DilRouteBuilder;
 
 import java.net.ConnectException;
 
 
 public class CamelWebServiceRoute extends RouteBuilder {
-    private final RouteProcessorContainer routeProcessorContainer;
     private final DilProxyConfig config;
-    private final String toUri;
+    private final DilRouteBuilder routeBuilder;
 
-    public CamelWebServiceRoute(DilProxyConfig config, RouteProcessorContainer routeProcessorContainer, String toUri) {
+    public CamelWebServiceRoute(DilRouteBuilder routeBuilder, DilProxyConfig config) {
         this.config = config;
-        this.routeProcessorContainer = routeProcessorContainer;
-        this.toUri = toUri;
+        this.routeBuilder = routeBuilder;
     }
 
     @Override
@@ -27,23 +28,15 @@ public class CamelWebServiceRoute extends RouteBuilder {
 
         setupExceptionHandling();
 
-        if (config.useCompression()) {
-            from(fromPath)
-                    .process(routeProcessorContainer.getRequestProcessor())
-                    .process(new ProxyPreprocessor())
-                    .marshal()
-                    .gzip()
-                    .to(toUri)
-                    .process(routeProcessorContainer.getResponseProcessor())
-                    .unmarshal()
-                    .gzip();
-        } else {
-            from(fromPath)
-                    .process(routeProcessorContainer.getRequestProcessor())
-                    .process(new ProxyPreprocessor())
-                    .to(toUri)
-                    .process(routeProcessorContainer.getResponseProcessor());
+        RouteDefinition routeDefinition = from(fromPath);
+        for(Processor processor: routeBuilder.getPreProcessors()) {
+            routeDefinition = routeDefinition.process(processor);
         }
+
+        routeDefinition = routeDefinition.to(routeBuilder.getToUri());
+
+        routeDefinition.process(new ResponseProcessor());
+
     }
 
     private String getFromPath() {

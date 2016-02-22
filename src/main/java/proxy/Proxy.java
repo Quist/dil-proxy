@@ -2,13 +2,16 @@ package proxy;
 
 import com.typesafe.config.ConfigFactory;
 import config.DilProxyConfig;
-import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import routing.ProxyRouteFactory;
+import processors.ProxyPostProcessor;
+import processors.ProxyPreprocessor;
+import processors.protocols.HttpPreprocessor;
+import processors.protocols.HttpRequest;
 import routing.protocols.*;
-import routing.WebServiceRouteFactory;
+import routing.routes.CamelProxyRoute;
+import routing.routes.CamelWebServiceRoute;
 
 import java.io.File;
 
@@ -26,13 +29,13 @@ public class Proxy {
             System.exit(1);
         }
 
-        File file = new File(args[0]);
-        if ( !file.exists()) {
+        File configFile = new File(args[0]);
+        if ( !configFile.exists()) {
             System.out.println("File does not exist: " + args[0]);
             System.exit(1);
         }
 
-        DilProxyConfig config = new DilProxyConfig(ConfigFactory.parseFile(file));
+        DilProxyConfig config = new DilProxyConfig(ConfigFactory.parseFile(configFile));
 
         DefaultCamelContext defaultCamelContext = new DefaultCamelContext();
         CamelComponentInitializer componentInitializer = new CamelComponentInitializer(defaultCamelContext);
@@ -63,28 +66,26 @@ public class Proxy {
     }
 
     private void addRoutes() throws Exception {
-        addIncomingWebServiceRequestRoute();
-        addBetweenProxiesRoute();
+        DilRouteBuilder routeBuilder = createProtocolRoute();
+        camelContext.addRoutes(new CamelWebServiceRoute(routeBuilder, config));
+        camelContext.addRoutes(new CamelProxyRoute(routeBuilder, config));
+
     }
 
-    private void addIncomingWebServiceRequestRoute() throws Exception {
-        WebServiceRouteFactory webServiceRouteFactory = new WebServiceRouteFactory(config);
-        RouteBuilder webServiceRequestRoute = webServiceRouteFactory.create(createProtocolFactory());
-        camelContext.addRoutes(webServiceRequestRoute);
-    }
-
-    private void addBetweenProxiesRoute() throws Exception {
-        ProxyRouteFactory proxyRouteFactory = new ProxyRouteFactory();
-        camelContext.addRoutes(proxyRouteFactory.createProxyRouteBuilder(config));
-    }
-
-    private DilRouteBuilder createProtocolFactory() {
+    private DilRouteBuilder createProtocolRoute() {
         switch (config.getSelectedProtocol()) {
             case AMQP:
-                return new AmqpRoute(config);
+                AmqpRoute amqpRoute = new AmqpRoute(config);
+                amqpRoute.addPreprocessor(new ProxyPreprocessor());
+                amqpRoute.addPostProcessor(new ProxyPostProcessor());
+                return  amqpRoute;
             case HTTP:
-                return new HttpRoute(config);
+                HttpRoute httpRoute = new HttpRoute(config);
+                httpRoute.addPreprocessor(new HttpPreprocessor());
+                httpRoute.addPostProcessor(new HttpRequest());
+                return httpRoute;
             case MQTT:
+                System.out.println("LOL");
                 return new MqttRoute(config);
             case COAP:
                 return new CoapRoute(config);

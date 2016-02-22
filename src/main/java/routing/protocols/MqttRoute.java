@@ -4,10 +4,9 @@ import config.DilProxyConfig;
 import org.apache.camel.builder.RouteBuilder;
 import processors.protocols.MqttRequest;
 import processors.WebServiceResponseProcessor;
-import routing.RouteProcessorContainer;
 import routing.routes.CamelProxyRoute;
 
-public class MqttRoute implements DilRouteBuilder {
+public class MqttRoute extends DilRouteBuilder {
 
     private final DilProxyConfig config;
 
@@ -27,9 +26,4 @@ public class MqttRoute implements DilRouteBuilder {
                 "?subscribeTopicName=" + config.getMqttConfig().getConsumeQueue();
     }
 
-    @Override
-    public RouteBuilder create() {
-        RouteProcessorContainer routeProcessorContainer = new RouteProcessorContainer(new MqttRequest(), new WebServiceResponseProcessor());
-        return new CamelProxyRoute(config, routeProcessorContainer, getListenUri());
-    }
 }

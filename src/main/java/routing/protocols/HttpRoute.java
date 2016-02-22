@@ -4,10 +4,9 @@ import config.DilProxyConfig;
 import org.apache.camel.builder.RouteBuilder;
 import processors.protocols.HttpRequest;
 import processors.WebServiceResponseProcessor;
-import routing.RouteProcessorContainer;
 import routing.routes.CamelProxyRoute;
 
-public class HttpRoute implements DilRouteBuilder {
+public class HttpRoute extends DilRouteBuilder {
 
     private final DilProxyConfig config;
 
@@ -26,10 +25,4 @@ public class HttpRoute implements DilRouteBuilder {
         return String.format("jetty:http://%s/proxy?matchOnUriPrefix=true", hostname);
     }
 
-    @Override
-    public RouteBuilder create() {
-        RouteProcessorContainer routeProcessorContainer = new RouteProcessorContainer(new HttpRequest(), new WebServiceResponseProcessor());
-        String listenUri = getListenUri();
-        return new CamelProxyRoute(config, routeProcessorContainer, listenUri);
-    }
 }

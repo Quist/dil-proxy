@@ -22,5 +22,6 @@ public class ProxyPreprocessor implements Processor {
         body = headers + body;
 
         exchange.getIn().setBody(body);
+        System.out.println("Setting body to: " + body);
     }
 }

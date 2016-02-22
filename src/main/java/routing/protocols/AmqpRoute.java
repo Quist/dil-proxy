@@ -2,13 +2,8 @@ package routing.protocols;
 
 import config.AmqpConfig;
 import config.DilProxyConfig;
-import org.apache.camel.builder.RouteBuilder;
-import processors.protocols.AmqpRequest;
-import processors.WebServiceResponseProcessor;
-import routing.RouteProcessorContainer;
-import routing.routes.CamelProxyRoute;
 
-public class AmqpRoute implements DilRouteBuilder {
+public class AmqpRoute extends DilRouteBuilder {
 
     private final DilProxyConfig config;
     private final AmqpConfig amqpConfig;
@@ -28,9 +23,4 @@ public class AmqpRoute implements DilRouteBuilder {
         return "amqp:queue:" + config.getAmqpConfig().getConsumeQueue();
     }
 
-    @Override
-    public RouteBuilder create() {
-        RouteProcessorContainer routeProcessorContainer = new RouteProcessorContainer(new AmqpRequest(), new WebServiceResponseProcessor());
-        return new CamelProxyRoute(config, routeProcessorContainer, getListenUri());
-    }
 }
