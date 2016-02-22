@@ -17,7 +17,7 @@ public class HttpRoute implements DilRouteBuilder {
 
     @Override
     public String getToUri() {
-        return String.format("jetty:http://%s/proxy?bridgeEndpoint=true", config.getTargetProxyHostname());
+        return String.format("http://%s/proxy?bridgeEndpoint=true", config.getTargetProxyHostname());
     }
 
     @Override
