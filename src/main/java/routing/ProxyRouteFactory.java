@@ -16,7 +16,7 @@ public class ProxyRouteFactory {
     final Logger logger = LoggerFactory.getLogger(ProxyRouteFactory.class);
 
     public RouteBuilder createProxyRouteBuilder(DilProxyConfig config) {
-        switch (config.getProtocol()) {
+        switch (config.getSelectedProtocol()) {
             case AMQP:
                 return createAmqpRoute(config);
             case HTTP:
@@ -26,8 +26,8 @@ public class ProxyRouteFactory {
             case COAP:
                 return createCoapRoute(config);
             default:
-                logger.error("No path configuration for: " + config.getProtocol());
-                throw new IllegalArgumentException("No configuration for: " + config.getProtocol());
+                logger.error("No path configuration for: " + config.getSelectedProtocol());
+                throw new IllegalArgumentException("No configuration for: " + config.getSelectedProtocol());
         }
     }
 

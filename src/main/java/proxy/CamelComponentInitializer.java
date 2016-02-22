@@ -21,7 +21,7 @@ public class CamelComponentInitializer {
     }
 
     public void init(DilProxyConfig config) throws MalformedURLException {
-        switch (config.getProtocol()) {
+        switch (config.getSelectedProtocol()) {
             case AMQP:
                 addAmqpComponent(config.getAmqpConfig());
                 break;

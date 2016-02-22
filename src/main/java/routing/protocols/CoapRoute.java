@@ -16,7 +16,7 @@ public class CoapRoute implements DilRouteBuilder {
 
     @Override
     public String getToUri() {
-        return "coap:" + config.getProxyHostname() + "/test";
+        return "coap:" + config.getTargetProxyHostname() + "/test";
     }
 
     @Override

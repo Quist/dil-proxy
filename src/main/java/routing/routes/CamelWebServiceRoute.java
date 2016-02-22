@@ -47,7 +47,8 @@ public class CamelWebServiceRoute extends RouteBuilder {
     }
 
     private String getFromPath() {
-        return String.format("jetty:http://%s?matchOnUriPrefix=true", config.getHostname());
+        String hostname = String.format("%s:%s", config.getHostname(), config.getPort());
+        return String.format("jetty:http://%s?matchOnUriPrefix=true", hostname);
     }
 
     private void setupExceptionHandling() {

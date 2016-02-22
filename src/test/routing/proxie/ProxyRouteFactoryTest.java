@@ -18,7 +18,7 @@ public class ProxyRouteFactoryTest {
     public void testFactorySupportsMqtt() {
         ProxyRouteFactory proxyRouteFactory = new ProxyRouteFactory();
         DilProxyConfig config = mock(DilProxyConfig.class);
-        when(config.getProtocol()).thenReturn(Protocol.MQTT);
+        when(config.getSelectedProtocol()).thenReturn(Protocol.MQTT);
 
         RouteBuilder routeBuilder = proxyRouteFactory.createProxyRouteBuilder(config);
         assertThat(routeBuilder, is(notNullValue()));

@@ -1,6 +1,5 @@
 package config;
 
-import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import com.typesafe.config.ConfigValueFactory;
 import org.junit.Test;
@@ -23,7 +22,7 @@ public class DilProxyConfigTest {
                 .withValue("amqp.produceQueue", ConfigValueFactory.fromAnyRef("lol"))
         );
 
-        assertThat(dilProxyConfig.getProtocol(), is(Protocol.AMQP));
+        assertThat(dilProxyConfig.getSelectedProtocol(), is(Protocol.AMQP));
     }
 
     @Test
@@ -38,7 +37,7 @@ public class DilProxyConfigTest {
                 .withValue("amqp.produceQueue", ConfigValueFactory.fromAnyRef("lol"))
         );
 
-        assertThat(dilProxyConfig.getProtocol(), is(Protocol.MQTT));
+        assertThat(dilProxyConfig.getSelectedProtocol(), is(Protocol.MQTT));
     }
 
     @Test(expected = IllegalArgumentException.class)

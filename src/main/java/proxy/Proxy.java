@@ -56,7 +56,7 @@ public class Proxy {
             camelComponentInitializer.init(config);
             addRoutes();
             camelContext.start();
-            logger.info("Proxy started and listening on " + config.getHostname());
+            logger.info("Proxy started and listening on " + config.getHostname() + " port " + config.getPort());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -79,7 +79,7 @@ public class Proxy {
     }
 
     private DilRouteBuilder createProtocolFactory() {
-        switch (config.getProtocol()) {
+        switch (config.getSelectedProtocol()) {
             case AMQP:
                 return new AmqpRoute(config);
             case HTTP:
@@ -89,8 +89,8 @@ public class Proxy {
             case COAP:
                 return new CoapRoute(config);
             default:
-                logger.error("No configuration for: " + config.getProtocol());
-                throw new IllegalArgumentException("No configuration for: " + config.getProtocol());
+                logger.error("No configuration for: " + config.getSelectedProtocol());
+                throw new IllegalArgumentException("No configuration for: " + config.getSelectedProtocol());
         }
     }
 }

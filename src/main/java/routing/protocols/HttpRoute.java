@@ -17,12 +17,13 @@ public class HttpRoute implements DilRouteBuilder {
 
     @Override
     public String getToUri() {
-        return String.format("jetty:http://%s/proxy?bridgeEndpoint=true", config.getProxyHostname());
+        return String.format("jetty:http://%s/proxy?bridgeEndpoint=true", config.getTargetProxyHostname());
     }
 
     @Override
     public String getListenUri() {
-        return String.format("jetty:http://%s/proxy?matchOnUriPrefix=true", config.getHostname());
+        String hostname = String.format("%s:%s", config.getHostname(), config.getPort());
+        return String.format("jetty:http://%s/proxy?matchOnUriPrefix=true", hostname);
     }
 
     @Override

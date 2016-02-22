@@ -17,7 +17,7 @@ public class ProxyTest {
         DefaultCamelContext camelContext = mock(DefaultCamelContext.class);
         CamelComponentInitializer componentInitializer = mock(CamelComponentInitializer.class);
 
-        when(config.getProtocol()).thenReturn(Protocol.AMQP);
+        when(config.getSelectedProtocol()).thenReturn(Protocol.AMQP);
         when(config.getAmqpConfig()).thenReturn(amqpConfig);
         when(amqpConfig.getConsumeQueue()).thenReturn("1001");
 

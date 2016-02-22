@@ -26,7 +26,7 @@ public class WebServiceRouteFactoryTest {
         WebServiceRouteFactory factory = new WebServiceRouteFactory(config);
         DilRouteBuilder dilRouteBuilder = new AmqpRoute(config);
 
-        when(config.getProtocol()).thenReturn(Protocol.AMQP);
+        when(config.getSelectedProtocol()).thenReturn(Protocol.AMQP);
         when(config.getAmqpConfig()).thenReturn(amqpConfig);
         when(amqpConfig.getConsumeQueue()).thenReturn("1001");
 

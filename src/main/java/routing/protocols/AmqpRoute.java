@@ -1,5 +1,6 @@
 package routing.protocols;
 
+import config.AmqpConfig;
 import config.DilProxyConfig;
 import org.apache.camel.builder.RouteBuilder;
 import processors.protocols.AmqpRequest;
@@ -10,9 +11,11 @@ import routing.routes.CamelProxyRoute;
 public class AmqpRoute implements DilRouteBuilder {
 
     private final DilProxyConfig config;
+    private final AmqpConfig amqpConfig;
 
     public AmqpRoute(DilProxyConfig config) {
         this.config = config;
+        amqpConfig = config.getAmqpConfig();
     }
 
     @Override

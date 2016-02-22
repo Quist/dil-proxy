@@ -3,27 +3,30 @@ package config;
 import com.typesafe.config.Config;
 import proxy.Protocol;
 
+import java.util.Optional;
+
+import static proxy.Protocol.*;
+
 public class DilProxyConfig {
     private final boolean useCompression;
     private final String hostname;
-    private final String proxyHostname;
-    private final Protocol protocol;
-    private final AmqpConfig amqpConfig;
-    private final MqttConfig mqttConfig;
-    private final CoapConfig coapConfig;
+    private final String port;
+    private final String targetProxyHostname;
+    private final Protocol selectedProtocol;
+
+    private Optional<AmqpConfig> amqpConfig;
+    private Optional<CoapConfig> coapConfig;
+    private Optional<MqttConfig> mqttConfig;
 
     public DilProxyConfig(Config config) {
         Config proxyConfig = config.getConfig("proxy");
-        Config networkConfig = config.getConfig("network");
 
         useCompression = proxyConfig.getBoolean("useCompression");
-        proxyHostname = networkConfig.getString("proxyHostname");
-        hostname = networkConfig.getString("hostname");
-        protocol = setProtocol(proxyConfig.getString("protocol"));
+        port = proxyConfig.getString("port");
+        targetProxyHostname = proxyConfig.getString("targetProxyHostname");
+        hostname = proxyConfig.getString("hostname");
 
-        this.amqpConfig = new AmqpConfig(config.getConfig("amqp"));
-        this.mqttConfig = new MqttConfig(config.getConfig("mqtt"));
-        this.coapConfig = new CoapConfig(config.getConfig("coap"));
+        this.selectedProtocol = setProxyConfig(proxyConfig);
     }
 
     public boolean useCompression() {
@@ -34,42 +37,56 @@ public class DilProxyConfig {
         return hostname;
     }
 
-    public String getProxyHostname() {
-        return proxyHostname;
+    public String getPort() {
+        return port;
     }
 
-    public Protocol getProtocol() {
-        return protocol;
+    public String getTargetProxyHostname() {
+        return targetProxyHostname;
+    }
+
+    public Protocol getSelectedProtocol() {
+        return selectedProtocol;
     }
 
     public AmqpConfig getAmqpConfig() {
-        return amqpConfig;
-    }
-
-    public MqttConfig getMqttConfig() {
-        return mqttConfig;
+        if ( ! amqpConfig.isPresent()) {
+            throw  new IllegalArgumentException("No protocol configuration for AMQP");
+        }
+        return amqpConfig.get();
     }
 
     public CoapConfig getCoapConfig() {
-        return coapConfig;
+        if ( ! coapConfig.isPresent()) {
+            throw  new IllegalArgumentException("No protocol configuration for AMQP");
+        }
+        return coapConfig.get();
     }
 
-    private Protocol setProtocol(String protocol) {
-        switch (protocol.toLowerCase()) {
+    public MqttConfig getMqttConfig() {
+        if ( ! mqttConfig.isPresent()) {
+            throw  new IllegalArgumentException("No protocol configuration for AMQP");
+        }
+        return mqttConfig.get();
+    }
+
+    private Protocol setProxyConfig(Config config) {
+        switch (config.getString("protocol").toLowerCase()) {
             case "amqp": {
-                return Protocol.AMQP;
+                this.amqpConfig = Optional.of(new AmqpConfig(config));
+                return AMQP;
             }
             case "http": {
-                return Protocol.HTTP;
+                return HTTP;
             }
             case "mqtt": {
-                return Protocol.MQTT;
+                return MQTT;
             }
             case "coap": {
-                return Protocol.COAP;
+                return COAP;
             }
             default: {
-                throw  new IllegalArgumentException("Unsupported protocol: " + protocol);
+                throw  new IllegalArgumentException("Unsupported protocol: " + config.getString("protocol"));
             }
         }
     }
