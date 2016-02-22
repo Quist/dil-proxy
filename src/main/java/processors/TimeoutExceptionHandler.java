@@ -11,6 +11,6 @@ public class TimeoutExceptionHandler implements Processor {
     @Override
     public void process(Exchange exchange) throws Exception {
         logger.error("Timeout exception occurred. Returning 504.");
-        exchange.getIn().setHeader(Exchange.HTTP_RESPONSE_CODE, 504);
+        exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, 504);
     }
 }
