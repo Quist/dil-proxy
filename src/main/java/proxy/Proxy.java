@@ -10,6 +10,7 @@ import routing.ProxyRouteFactory;
 import routing.protocols.*;
 import routing.WebServiceRouteFactory;
 
+import java.io.File;
 
 public class Proxy {
 
@@ -25,7 +26,14 @@ public class Proxy {
             System.exit(1);
         }
 
-        DilProxyConfig config = new DilProxyConfig(ConfigFactory.load(args[0]));
+        File file = new File(args[0]);
+        if ( !file.exists()) {
+            System.out.println("File does not exist: " + args[0]);
+            System.exit(1);
+        }
+
+        DilProxyConfig config = new DilProxyConfig(ConfigFactory.parseFile(file));
+
         DefaultCamelContext defaultCamelContext = new DefaultCamelContext();
         CamelComponentInitializer componentInitializer = new CamelComponentInitializer(defaultCamelContext);
 
