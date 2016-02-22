@@ -1,6 +1,5 @@
 package coap;
 
-import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.impl.EventDrivenPollingConsumer;
 import org.eclipse.californium.core.CoapServer;
@@ -26,7 +25,7 @@ public class CoapConsumer extends EventDrivenPollingConsumer {
         System.out.println("Starter opp!");
         CoapServer server = new CoapServer();
         addEndpoint(server);
-        server.add(new MyResource("test", endpoint, processor));
+        server.add(new CamelCoapResource("test", endpoint, processor));
         server.start();
     }
 
