@@ -14,9 +14,8 @@ public class DilProxyConfig {
     private final String targetProxyHostname;
     private final Protocol selectedProtocol;
 
-    private Optional<AmqpConfig> amqpConfig;
-    private Optional<CoapConfig> coapConfig;
-    private Optional<MqttConfig> mqttConfig;
+    private Optional<AmqpConfig> amqpConfig = Optional.empty();
+    private Optional<MqttConfig> mqttConfig = Optional.empty();
 
     public DilProxyConfig(Config config) {
         Config proxyConfig = config.getConfig("proxy");
@@ -54,13 +53,6 @@ public class DilProxyConfig {
             throw  new IllegalArgumentException("No protocol configuration for AMQP");
         }
         return amqpConfig.get();
-    }
-
-    public CoapConfig getCoapConfig() {
-        if ( ! coapConfig.isPresent()) {
-            throw  new IllegalArgumentException("No protocol configuration for AMQP");
-        }
-        return coapConfig.get();
     }
 
     public MqttConfig getMqttConfig() {
