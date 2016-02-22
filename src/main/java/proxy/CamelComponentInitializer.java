@@ -26,13 +26,13 @@ public class CamelComponentInitializer {
                 addAmqpComponent(config.getAmqpConfig());
                 break;
             case COAP:
-                addCoapComponent(config.getCoapConfig());
+                addCoapComponent(config);
                 break;
         }
     }
 
-    private void addCoapComponent(CoapConfig config) {
-        CoapComponent coap = new CoapComponent(config.getListenPort());
+    private void addCoapComponent(DilProxyConfig config) {
+        CoapComponent coap = new CoapComponent(Integer.parseInt(config.getPort()));
         camelContext.addComponent("coap", coap);
     }
 
