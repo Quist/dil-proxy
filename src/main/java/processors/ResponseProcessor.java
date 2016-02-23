@@ -14,6 +14,6 @@ public class ResponseProcessor implements Processor {
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        logger.info("Received response");
+        logger.info("Received response.");
     }
 }

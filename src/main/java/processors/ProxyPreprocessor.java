@@ -13,7 +13,7 @@ public class ProxyPreprocessor implements Processor {
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        logger.info("Starting pre processing of exchange before sending to other proxy.");
+        logger.info("Starting pre processing exchange before sending to other proxy.");
 
         HttpServletRequest req = exchange.getIn(HttpMessage.class).getRequest();
         exchange.getIn().setHeader("path", req.getRequestURL());
