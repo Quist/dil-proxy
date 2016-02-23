@@ -86,7 +86,10 @@ public class Proxy {
             case MQTT:
                 return new MqttRoute(config);
             case COAP:
-                return new CoapRoute(config);
+                CoapRoute coapRoute = new CoapRoute(config);
+                coapRoute.addPreprocessor(new ProxyPreprocessor());
+                coapRoute.addPostProcessor(new ProxyPostProcessor());
+                return coapRoute;
             default:
                 logger.error("No configuration for: " + config.getSelectedProtocol());
                 throw new IllegalArgumentException("No configuration for: " + config.getSelectedProtocol());
