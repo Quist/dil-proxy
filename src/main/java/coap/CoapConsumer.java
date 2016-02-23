@@ -4,10 +4,14 @@ import org.apache.camel.Processor;
 import org.apache.camel.impl.EventDrivenPollingConsumer;
 import org.eclipse.californium.core.CoapServer;
 import org.eclipse.californium.core.network.CoapEndpoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 
 class CoapConsumer extends EventDrivenPollingConsumer {
+
+    private final Logger logger = LoggerFactory.getLogger(CoapConsumer.class);
 
     private final CamelCoapEndpoint endpoint;
     private final Processor processor;
@@ -22,7 +26,7 @@ class CoapConsumer extends EventDrivenPollingConsumer {
 
     @Override
     protected void doStart() throws Exception {
-        System.out.println("Starter opp!");
+        logger.info("Starting COAP server");
         CoapServer server = new CoapServer();
         addEndpoint(server);
         server.add(new CamelCoapResource("test", endpoint, processor));
