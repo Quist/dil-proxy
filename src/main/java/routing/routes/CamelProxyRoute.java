@@ -26,7 +26,7 @@ public class CamelProxyRoute extends RouteBuilder {
         setupExceptionHandling();
 
         RouteDefinition routeDefinition = from(routeBuilder.getListenUri());
-        for (Processor processor: routeBuilder.getPreProcessors()) {
+        for (Processor processor: routeBuilder.getPostProcessors()) {
             routeDefinition = routeDefinition.process(processor);
         }
         routeDefinition.toD("${header.path}" + "?bridgeEndpoint=true")
