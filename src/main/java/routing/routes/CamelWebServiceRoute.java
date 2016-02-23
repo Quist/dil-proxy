@@ -4,6 +4,7 @@ import config.DilProxyConfig;
 import org.apache.camel.ExchangeTimedOutException;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.http.common.HttpOperationFailedException;
 import org.apache.camel.model.RouteDefinition;
 import processors.ResponseProcessor;
 import processors.TimeoutExceptionHandler;
@@ -44,7 +45,7 @@ public class CamelWebServiceRoute extends RouteBuilder {
     }
 
     private void setupExceptionHandling() {
-        onException(ExchangeTimedOutException.class, ConnectException.class)
+        onException(ExchangeTimedOutException.class, ConnectException.class, HttpOperationFailedException.class)
                 .process(new TimeoutExceptionHandler())
                 .handled(true);
     }
