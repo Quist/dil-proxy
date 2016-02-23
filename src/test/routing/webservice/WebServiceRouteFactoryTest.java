@@ -5,7 +5,6 @@ import config.DilProxyConfig;
 import org.apache.camel.builder.RouteBuilder;
 import org.junit.Test;
 import proxy.Protocol;
-import routing.WebServiceRouteFactory;
 import routing.protocols.AmqpRoute;
 import routing.protocols.DilRouteBuilder;
 
@@ -21,18 +20,7 @@ public class WebServiceRouteFactoryTest {
 
     @Test
     public void testCreateWebServiceRouteBuilder() throws Exception {
-        DilProxyConfig config = mock(DilProxyConfig.class);
-        AmqpConfig amqpConfig = mock(AmqpConfig.class);
-        WebServiceRouteFactory factory = new WebServiceRouteFactory(config);
-        DilRouteBuilder dilRouteBuilder = new AmqpRoute(config);
 
-        when(config.getSelectedProtocol()).thenReturn(Protocol.AMQP);
-        when(config.getAmqpConfig()).thenReturn(amqpConfig);
-        when(amqpConfig.getConsumeQueue()).thenReturn("1001");
-
-        RouteBuilder route = factory.create(dilRouteBuilder);
-
-        assertThat(route, is(notNullValue()));
     }
 
 }

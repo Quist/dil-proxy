@@ -1,10 +1,14 @@
 package proxy.serializer;
 
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ProxyPayloadDeserializer {
+    private final static Logger logger = LoggerFactory.getLogger(ProxyPayloadDeserializer.class);
 
     public ProxyPayload deserialize(String payload) {
+        logger.info("Deserializing proxy payload. Body length: " + payload.length());
         JSONObject headers = extractHeaders(payload);
         String body = extractBody(payload);
         return new ProxyPayload(headers.getString("path"), body);

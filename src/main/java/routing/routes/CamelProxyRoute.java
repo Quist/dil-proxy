@@ -1,23 +1,23 @@
 package routing.routes;
 
 import config.DilProxyConfig;
+import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
-import processors.ProxyPostProcessor;
+import org.apache.camel.model.RouteDefinition;
 import processors.TimeoutExceptionHandler;
-import routing.RouteProcessorContainer;
+import processors.WebServiceResponseProcessor;
+import routing.protocols.DilRouteBuilder;
 
 import java.net.ConnectException;
 
 public class CamelProxyRoute extends RouteBuilder {
 
     private final DilProxyConfig config;
-    private final RouteProcessorContainer routeProcessorContainer;
-    private final String listenUri;
+    private final DilRouteBuilder routeBuilder;
 
-    public CamelProxyRoute(DilProxyConfig config, RouteProcessorContainer routeProcessorContainer, String listenUri) {
+    public CamelProxyRoute(DilRouteBuilder routeBuilder, DilProxyConfig config) {
+        this.routeBuilder = routeBuilder;
         this.config = config;
-        this.routeProcessorContainer = routeProcessorContainer;
-        this.listenUri = listenUri;
     }
 
     @Override
@@ -25,23 +25,12 @@ public class CamelProxyRoute extends RouteBuilder {
 
         setupExceptionHandling();
 
-        if (config.useCompression()) {
-            from(listenUri)
-                    .process(routeProcessorContainer.getRequestProcessor())
-                    .unmarshal()
-                    .gzip()
-                    .removeHeaders("CamelHttp*")
-                    .toD("${header.path}" + "?bridgeEndpoint=true")
-                    .process(routeProcessorContainer.getResponseProcessor())
-                    .marshal()
-                    .gzip();
-        } else {
-            from(listenUri)
-                    .process(routeProcessorContainer.getRequestProcessor())
-                    .process(new ProxyPostProcessor())
-                    .toD("${header.path}" + "?bridgeEndpoint=true")
-                    .process(routeProcessorContainer.getResponseProcessor());
+        RouteDefinition routeDefinition = from(routeBuilder.getListenUri());
+        for (Processor processor: routeBuilder.getPostProcessors()) {
+            routeDefinition = routeDefinition.process(processor);
         }
+        routeDefinition.toD("${header.path}" + "?bridgeEndpoint=true")
+                .process(new WebServiceResponseProcessor());
     }
 
     private void setupExceptionHandling() {

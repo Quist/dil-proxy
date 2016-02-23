@@ -4,11 +4,16 @@ import org.apache.camel.Exchange;
 import org.apache.camel.impl.DefaultProducer;
 import org.eclipse.californium.core.CoapClient;
 import org.eclipse.californium.core.CoapResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.net.ConnectException;
 
 import static org.eclipse.californium.core.coap.MediaTypeRegistry.TEXT_PLAIN;
 
-public class CoapProducer extends DefaultProducer {
+class CoapProducer extends DefaultProducer {
     private static final int HTTP_GATEWAY_TIMEOUT = 504;
+    private final Logger logger = LoggerFactory.getLogger(CoapProducer.class);
 
     private final CamelCoapEndpoint endpoint;
 
@@ -23,9 +28,10 @@ public class CoapProducer extends DefaultProducer {
         CoapResponse response = client.post(exchange.getIn().getBody().toString(), TEXT_PLAIN);
 
         if (response == null) {
-            System.out.println("No COAP response :(");
+            logger.warn("No COAP response received.");
             exchange.getIn().setHeader(Exchange.HTTP_RESPONSE_CODE, HTTP_GATEWAY_TIMEOUT);
             exchange.getIn().setBody("");
+            throw new ConnectException("No coap response received");
         } else {
             exchange.getIn().setBody(response.getResponseText());
         }

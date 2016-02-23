@@ -16,7 +16,5 @@ public class MqttRouteTest {
         DilProxyConfig dilProxyConfig = mock(DilProxyConfig.class);
         MqttRoute mqttRoute = new MqttRoute(dilProxyConfig);
 
-        RouteBuilder routeBuilder = mqttRoute.create();
-        assertThat(routeBuilder, is(notNullValue()));
     }
 }

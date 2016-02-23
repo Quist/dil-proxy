@@ -2,9 +2,7 @@ package config;
 
 import com.typesafe.config.Config;
 import proxy.Protocol;
-
 import java.util.Optional;
-
 import static proxy.Protocol.*;
 
 public class DilProxyConfig {
@@ -15,7 +13,7 @@ public class DilProxyConfig {
     private final Protocol selectedProtocol;
 
     private Optional<AmqpConfig> amqpConfig = Optional.empty();
-    private Optional<MqttConfig> mqttConfig = Optional.empty();
+    private final Optional<MqttConfig> mqttConfig = Optional.empty();
 
     public DilProxyConfig(Config config) {
         Config proxyConfig = config.getConfig("proxy");
@@ -25,7 +23,8 @@ public class DilProxyConfig {
         targetProxyHostname = proxyConfig.getString("targetProxyHostname");
         hostname = proxyConfig.getString("hostname");
 
-        this.selectedProtocol = setProxyConfig(proxyConfig);
+        selectedProtocol = getProtocol(proxyConfig);
+        setProtocolConfig(selectedProtocol, config);
     }
 
     public boolean useCompression() {
@@ -57,15 +56,14 @@ public class DilProxyConfig {
 
     public MqttConfig getMqttConfig() {
         if ( ! mqttConfig.isPresent()) {
-            throw  new IllegalArgumentException("No protocol configuration for AMQP");
+            throw  new IllegalArgumentException("No protocol configuration for MQTT");
         }
         return mqttConfig.get();
     }
 
-    private Protocol setProxyConfig(Config config) {
-        switch (config.getString("protocol").toLowerCase()) {
+    private Protocol getProtocol(Config proxyConfig) {
+        switch (proxyConfig.getString("protocol").toLowerCase()) {
             case "amqp": {
-                this.amqpConfig = Optional.of(new AmqpConfig(config));
                 return AMQP;
             }
             case "http": {
@@ -78,7 +76,16 @@ public class DilProxyConfig {
                 return COAP;
             }
             default: {
-                throw  new IllegalArgumentException("Unsupported protocol: " + config.getString("protocol"));
+                throw  new IllegalArgumentException("Unsupported protocol: " + proxyConfig.getString("protocol"));
+            }
+        }
+    }
+
+    private void setProtocolConfig(Protocol protocol, Config config) {
+        switch (protocol) {
+            case AMQP: {
+                this.amqpConfig = Optional.of(new AmqpConfig(config.getConfig("amqp")));
+                break;
             }
         }
     }

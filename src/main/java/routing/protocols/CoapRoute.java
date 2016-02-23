@@ -1,14 +1,9 @@
 package routing.protocols;
 
 import config.DilProxyConfig;
-import org.apache.camel.builder.RouteBuilder;
-import processors.WebServiceResponseProcessor;
-import processors.protocols.CoapRequest;
-import routing.RouteProcessorContainer;
-import routing.routes.CamelProxyRoute;
 
-public class CoapRoute implements DilRouteBuilder {
-    private DilProxyConfig config;
+public class CoapRoute extends DilRouteBuilder {
+    private final DilProxyConfig config;
 
     public CoapRoute(DilProxyConfig config) {
         this.config = config;
@@ -24,9 +19,4 @@ public class CoapRoute implements DilRouteBuilder {
         return "coap:" + config.getHostname();
     }
 
-    @Override
-    public RouteBuilder create() {
-        RouteProcessorContainer routeProcessorContainer = new RouteProcessorContainer(new CoapRequest(), new WebServiceResponseProcessor());
-        return new CamelProxyRoute(config, routeProcessorContainer, getListenUri());
-    }
 }
