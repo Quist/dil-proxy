@@ -8,7 +8,7 @@ import org.eclipse.californium.core.server.resources.CoapExchange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CamelCoapResource extends CoapResource {
+class CamelCoapResource extends CoapResource {
     private final Logger logger = LoggerFactory.getLogger(CamelCoapResource.class);
 
     private final Endpoint endpoint;

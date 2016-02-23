@@ -15,7 +15,7 @@ public class DilProxyConfig {
     private final Protocol selectedProtocol;
 
     private Optional<AmqpConfig> amqpConfig = Optional.empty();
-    private Optional<MqttConfig> mqttConfig = Optional.empty();
+    private final Optional<MqttConfig> mqttConfig = Optional.empty();
 
     public DilProxyConfig(Config config) {
         Config proxyConfig = config.getConfig("proxy");

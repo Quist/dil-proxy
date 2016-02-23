@@ -9,12 +9,12 @@ import org.apache.camel.http.common.HttpMessage;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class WebServiceRequestProcessor implements Processor {
+class WebServiceRequestProcessor implements Processor {
 
     private static final HttpRequestLogger HTTP_REQUEST_LOGGER = new HttpRequestLogger();
-    final Logger logger = LoggerFactory.getLogger(WebServiceRequestProcessor.class);
+    private final Logger logger = LoggerFactory.getLogger(WebServiceRequestProcessor.class);
 
-    public WebServiceRequestProcessor() {
+    private WebServiceRequestProcessor() {
     }
 
     @Override

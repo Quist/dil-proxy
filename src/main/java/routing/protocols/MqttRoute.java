@@ -1,10 +1,6 @@
 package routing.protocols;
 
 import config.DilProxyConfig;
-import org.apache.camel.builder.RouteBuilder;
-import processors.protocols.MqttRequest;
-import processors.WebServiceResponseProcessor;
-import routing.routes.CamelProxyRoute;
 
 public class MqttRoute extends DilRouteBuilder {
 

@@ -1,10 +1,6 @@
 package routing.protocols;
 
 import config.DilProxyConfig;
-import org.apache.camel.builder.RouteBuilder;
-import processors.protocols.HttpRequest;
-import processors.WebServiceResponseProcessor;
-import routing.routes.CamelProxyRoute;
 
 public class HttpRoute extends DilRouteBuilder {
 
@@ -24,5 +20,4 @@ public class HttpRoute extends DilRouteBuilder {
         String hostname = String.format("%s:%s", config.getHostname(), config.getPort());
         return String.format("jetty:http://%s/proxy?matchOnUriPrefix=true", hostname);
     }
-
 }

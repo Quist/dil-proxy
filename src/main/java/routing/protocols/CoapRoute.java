@@ -1,13 +1,9 @@
 package routing.protocols;
 
 import config.DilProxyConfig;
-import org.apache.camel.builder.RouteBuilder;
-import processors.WebServiceResponseProcessor;
-import processors.protocols.CoapRequest;
-import routing.routes.CamelProxyRoute;
 
 public class CoapRoute extends DilRouteBuilder {
-    private DilProxyConfig config;
+    private final DilProxyConfig config;
 
     public CoapRoute(DilProxyConfig config) {
         this.config = config;

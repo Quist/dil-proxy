@@ -2,7 +2,6 @@ package proxy;
 
 import coap.CoapComponent;
 import config.AmqpConfig;
-import config.CoapConfig;
 import config.DilProxyConfig;
 import org.apache.camel.CamelContext;
 import org.apache.camel.component.amqp.AMQPComponent;

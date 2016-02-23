@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 public class WebServiceResponseProcessor implements Processor {
 
-    final Logger logger = LoggerFactory.getLogger(WebServiceResponseProcessor.class);
+    private final Logger logger = LoggerFactory.getLogger(WebServiceResponseProcessor.class);
 
     @Override
     public void process(Exchange exchange) throws Exception {

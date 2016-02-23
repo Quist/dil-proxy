@@ -7,12 +7,12 @@ import org.slf4j.LoggerFactory;
 import proxy.serializer.ProxyPayload;
 import proxy.serializer.ProxyPayloadDeserializer;
 
-public class MqttRequest implements Processor {
+class MqttRequest implements Processor {
     private final ProxyPayloadDeserializer deserializer;
 
     private final Logger logger = LoggerFactory.getLogger(MqttRequest.class);
 
-    public MqttRequest() {
+    private MqttRequest() {
         this.deserializer = new ProxyPayloadDeserializer();
     }
 

@@ -7,7 +7,7 @@ import org.eclipse.californium.core.network.CoapEndpoint;
 
 import java.net.InetSocketAddress;
 
-public class CoapConsumer extends EventDrivenPollingConsumer {
+class CoapConsumer extends EventDrivenPollingConsumer {
 
     private final CamelCoapEndpoint endpoint;
     private final Processor processor;

@@ -69,13 +69,12 @@ public class Proxy {
         DilRouteBuilder routeBuilder = createProtocolRoute();
         camelContext.addRoutes(new CamelWebServiceRoute(routeBuilder, config));
         camelContext.addRoutes(new CamelProxyRoute(routeBuilder, config));
-
     }
 
     private DilRouteBuilder createProtocolRoute() {
         switch (config.getSelectedProtocol()) {
             case AMQP:
-                AmqpRoute amqpRoute = new AmqpRoute(config);
+                AmqpRoute amqpRoute = new AmqpRoute(config.getAmqpConfig());
                 amqpRoute.addPreprocessor(new ProxyPreprocessor());
                 amqpRoute.addPostProcessor(new ProxyPostProcessor());
                 return  amqpRoute;
@@ -85,7 +84,6 @@ public class Proxy {
                 httpRoute.addPostProcessor(new HttpRequest());
                 return httpRoute;
             case MQTT:
-                System.out.println("LOL");
                 return new MqttRoute(config);
             case COAP:
                 return new CoapRoute(config);

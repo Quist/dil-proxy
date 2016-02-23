@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TimeoutExceptionHandler implements Processor {
-    final Logger logger = LoggerFactory.getLogger(TimeoutExceptionHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(TimeoutExceptionHandler.class);
 
     @Override
     public void process(Exchange exchange) throws Exception {

@@ -1,4 +1,4 @@
 package config;
 
-public class HttpConfig  {
+class HttpConfig  {
 }

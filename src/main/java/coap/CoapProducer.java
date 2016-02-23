@@ -7,7 +7,7 @@ import org.eclipse.californium.core.CoapResponse;
 
 import static org.eclipse.californium.core.coap.MediaTypeRegistry.TEXT_PLAIN;
 
-public class CoapProducer extends DefaultProducer {
+class CoapProducer extends DefaultProducer {
     private static final int HTTP_GATEWAY_TIMEOUT = 504;
 
     private final CamelCoapEndpoint endpoint;
