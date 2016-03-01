@@ -4,9 +4,12 @@ import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.eclipse.californium.core.CoapResource;
+import org.eclipse.californium.core.coap.CoAP;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.eclipse.californium.core.coap.CoAP.ResponseCode.INTERNAL_SERVER_ERROR;
 
 class CamelCoapResource extends CoapResource {
     private final Logger logger = LoggerFactory.getLogger(CamelCoapResource.class);
@@ -32,8 +35,13 @@ class CamelCoapResource extends CoapResource {
             e.printStackTrace();
         }
 
-        String body = camelExchange.getIn().getBody(String.class);
-        coapExchange.respond(body);
+        Exception e = camelExchange.getException();
+        if (e != null) {
+            coapExchange.respond(INTERNAL_SERVER_ERROR, e.getMessage());
+        } else {
+            String body = camelExchange.getIn().getBody(String.class);
+            coapExchange.respond(body);
+        }
     }
 
     private Exchange convertExchange(CoapExchange coapExchange) {
