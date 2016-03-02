@@ -23,5 +23,6 @@ public class ProxyPostProcessor implements Processor {
         ProxyPayload payload = deserializer.deserialize(body);
         exchange.getIn().setBody(payload.getBody());
         exchange.getIn().setHeader("path", payload.getPath());
+        exchange.getIn().setHeader(Exchange.HTTP_METHOD, payload.getMethod());
     }
 }

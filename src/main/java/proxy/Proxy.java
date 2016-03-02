@@ -9,6 +9,7 @@ import processors.ProxyPostProcessor;
 import processors.ProxyPreprocessor;
 import processors.protocols.HttpPreprocessor;
 import processors.protocols.HttpRequest;
+import proxy.serializer.ProxyPayloadSerializer;
 import routing.protocols.*;
 import routing.routes.CamelProxyRoute;
 import routing.routes.CamelWebServiceRoute;
@@ -75,7 +76,7 @@ public class Proxy {
         switch (config.getSelectedProtocol()) {
             case AMQP:
                 AmqpRoute amqpRoute = new AmqpRoute(config.getAmqpConfig());
-                amqpRoute.addPreprocessor(new ProxyPreprocessor());
+                amqpRoute.addPreprocessor(new ProxyPreprocessor(new ProxyPayloadSerializer()));
                 amqpRoute.addPostProcessor(new ProxyPostProcessor());
                 return  amqpRoute;
             case HTTP:
@@ -87,7 +88,7 @@ public class Proxy {
                 return new MqttRoute(config);
             case COAP:
                 CoapRoute coapRoute = new CoapRoute(config);
-                coapRoute.addPreprocessor(new ProxyPreprocessor());
+                coapRoute.addPreprocessor(new ProxyPreprocessor(new ProxyPayloadSerializer()));
                 coapRoute.addPostProcessor(new ProxyPostProcessor());
                 return coapRoute;
             default:
