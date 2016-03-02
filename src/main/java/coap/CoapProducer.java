@@ -33,7 +33,6 @@ class CoapProducer extends DefaultProducer {
             exchange.getIn().setBody("");
             throw new ConnectException("No coap response received");
         } else {
-            exchange.getIn().setHeader(Exchange.HTTP_RESPONSE_CODE, response.getCode());
             exchange.getIn().setBody(response.getResponseText());
         }
     }
