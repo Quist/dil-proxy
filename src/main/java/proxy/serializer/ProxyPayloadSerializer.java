@@ -10,7 +10,6 @@ public class ProxyPayloadSerializer {
         JSONObject header = new JSONObject();
         header.put("path", request.getRequestURL());
         header.put("method", request.getMethod());
-        System.out.println(header.toString());
         return header.toString();
     }
 }
