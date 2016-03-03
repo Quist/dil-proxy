@@ -60,6 +60,8 @@ class CamelCoapResource extends CoapResource {
                 return ResponseCode.CONTENT;
             case 201 :
                 return ResponseCode.CREATED;
+            case 404 :
+                return ResponseCode.NOT_FOUND;
             default:
                 logger.info("Unknown HTTP code. Setting default success code");
                 return ResponseCode._UNKNOWN_SUCCESS_CODE;
