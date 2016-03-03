@@ -29,7 +29,7 @@ public class CamelProxyRoute extends RouteBuilder {
         for (Processor processor: routeBuilder.getPostProcessors()) {
             routeDefinition = routeDefinition.process(processor);
         }
-        routeDefinition.toD("${header.path}" + "?bridgeEndpoint=true")
+        routeDefinition.toD("${header.path}" + "?bridgeEndpoint=true&throwExceptionOnFailure=false")
                 .process(new WebServiceResponseProcessor());
     }
 

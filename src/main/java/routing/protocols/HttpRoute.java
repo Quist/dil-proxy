@@ -12,7 +12,7 @@ public class HttpRoute extends DilRouteBuilder {
 
     @Override
     public String getToUri() {
-        return String.format("http://%s/proxy?bridgeEndpoint=true", config.getTargetProxyHostname());
+        return String.format("http://%s/proxy?bridgeEndpoint=true&throwExceptionOnFailure=false", config.getTargetProxyHostname());
     }
 
     @Override
