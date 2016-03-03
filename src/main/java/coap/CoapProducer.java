@@ -49,8 +49,14 @@ class CoapProducer extends DefaultProducer {
                 return HttpStatus.SC_OK;
             case CREATED:
                 return HttpStatus.SC_CREATED;
+            case DELETED:
+                return HttpStatus.SC_NO_CONTENT;
             case NOT_FOUND:
                 return HttpStatus.SC_NOT_FOUND;
+            case INTERNAL_SERVER_ERROR:
+                return HttpStatus.SC_INTERNAL_SERVER_ERROR;
+            case GATEWAY_TIMEOUT:
+                return HttpStatus.SC_GATEWAY_TIMEOUT;
             default:
                 logger.info("Unknown CoAP response code: " + coapResponseCode + ". Returning 200 OK");
                 return HttpStatus.SC_OK;

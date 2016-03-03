@@ -9,6 +9,7 @@ import org.eclipse.californium.core.coap.CoAP;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import processors.ResponseProcessor;
 
 import static org.eclipse.californium.core.coap.CoAP.ResponseCode;
 import static org.eclipse.californium.core.coap.CoAP.ResponseCode.INTERNAL_SERVER_ERROR;
@@ -60,8 +61,14 @@ class CamelCoapResource extends CoapResource {
                 return ResponseCode.CONTENT;
             case 201 :
                 return ResponseCode.CREATED;
+            case 204 :
+                return ResponseCode.DELETED;
             case 404 :
                 return ResponseCode.NOT_FOUND;
+            case 500 :
+                return ResponseCode.INTERNAL_SERVER_ERROR;
+            case 504 :
+                return ResponseCode.GATEWAY_TIMEOUT;
             default:
                 logger.info("Unknown HTTP code. Setting default success code");
                 return ResponseCode._UNKNOWN_SUCCESS_CODE;
