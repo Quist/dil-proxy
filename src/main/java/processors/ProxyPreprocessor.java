@@ -25,11 +25,8 @@ public class ProxyPreprocessor implements Processor {
         HttpServletRequest req = exchange.getIn(HttpMessage.class).getRequest();
         String proxyHeader = serializer.serialize(req);
 
-        exchange.getIn().setHeader("path", req.getRequestURL());
-
         String body = exchange.getIn().getBody(String.class);
         body = proxyHeader + body;
-
         exchange.getIn().setBody(body);
     }
 }
