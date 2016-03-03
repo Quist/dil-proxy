@@ -50,7 +50,7 @@ class CoapProducer extends DefaultProducer {
             case CREATED:
                 return HttpStatus.SC_CREATED;
             default:
-                logger.info("Unknown CoAP response code: " + coapResponseCode + ". Returnign 200 OK");
+                logger.info("Unknown CoAP response code: " + coapResponseCode + ". Returning 200 OK");
                 return HttpStatus.SC_OK;
         }
     }
