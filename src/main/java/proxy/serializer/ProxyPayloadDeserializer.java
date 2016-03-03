@@ -11,7 +11,10 @@ public class ProxyPayloadDeserializer {
         logger.info("DeSerializing proxy payload. Body length: " + payload.length());
         JSONObject headers = extractHeaders(payload);
         String body = extractBody(payload);
-        return new ProxyPayload(headers.getString("path"), headers.getString("method"), body);
+
+        ProxyPayload proxyPayload = new ProxyPayload(headers.getString("path"), headers.getString("method"), body);
+        logger.info("Proxy header. Path: " + proxyPayload.getPath() + ", Method: " + proxyPayload.getMethod());
+        return proxyPayload;
     }
 
     private JSONObject extractHeaders(String payload) {
