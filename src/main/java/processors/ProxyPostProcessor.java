@@ -24,5 +24,10 @@ public class ProxyPostProcessor implements Processor {
         exchange.getIn().setBody(payload.getBody());
         exchange.getIn().setHeader("path", payload.getPath());
         exchange.getIn().setHeader(Exchange.HTTP_METHOD, payload.getMethod());
+        removeCamelRoutingHeaders(exchange);
+    }
+
+    private void removeCamelRoutingHeaders(Exchange exchange) {
+        exchange.getIn().removeHeader("CamelHttpPath");
     }
 }

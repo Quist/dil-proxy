@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import processors.ProxyPostProcessor;
 import processors.ProxyPreprocessor;
 import processors.WebServiceRequestProcessor;
+import processors.protocols.AmqpRequest;
 import processors.protocols.HttpPreprocessor;
 import processors.protocols.HttpRequest;
 import proxy.serializer.ProxyPayloadSerializer;
@@ -80,6 +81,7 @@ public class Proxy {
                 amqpRoute.addPreprocessor(new WebServiceRequestProcessor());
                 amqpRoute.addPreprocessor(new ProxyPreprocessor(new ProxyPayloadSerializer()));
                 amqpRoute.addPostProcessor(new ProxyPostProcessor());
+                amqpRoute.addPostProcessor(new AmqpRequest());
                 return  amqpRoute;
             case HTTP:
                 HttpRoute httpRoute = new HttpRoute(config);
