@@ -2,20 +2,19 @@ package coap;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.impl.DefaultProducer;
-import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.eclipse.californium.core.CoapClient;
 import org.eclipse.californium.core.CoapResponse;
-import org.eclipse.californium.core.coap.CoAP;
+import org.eclipse.californium.core.coap.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.ConnectException;
 
+import static org.eclipse.californium.core.coap.CoAP.Code;
 import static org.eclipse.californium.core.coap.MediaTypeRegistry.TEXT_PLAIN;
 
 class CoapProducer extends DefaultProducer {
-    private static final int HTTP_GATEWAY_TIMEOUT = 504;
     private final Logger logger = LoggerFactory.getLogger(CoapProducer.class);
 
     private final CamelCoapEndpoint endpoint;
@@ -32,14 +31,14 @@ class CoapProducer extends DefaultProducer {
 
         if (response == null) {
             logger.warn("No CoAP response received.");
-            exchange.getIn().setHeader(Exchange.HTTP_RESPONSE_CODE, HTTP_GATEWAY_TIMEOUT);
+            exchange.getIn().setHeader(Exchange.HTTP_RESPONSE_CODE, HttpStatus.SC_GATEWAY_TIMEOUT);
             exchange.getIn().setBody("");
             throw new ConnectException("No CoAP response received");
         } else {
             logger.info("CoAP response received. Status code: " + response.getCode());
 
             exchange.getIn().setBody(response.getResponseText());
-            exchange.getIn().setHeader(Exchange.HTTP_RESPONSE_CODE, getHttpStatusCode(response.getCode())); /* To do: Map this to correct status code.*/
+            exchange.getIn().setHeader(Exchange.HTTP_RESPONSE_CODE, getHttpStatusCode(response.getCode()));
         }
     }
 
