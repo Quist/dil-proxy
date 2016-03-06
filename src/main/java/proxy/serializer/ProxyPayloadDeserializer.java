@@ -11,10 +11,23 @@ public class ProxyPayloadDeserializer {
         logger.info("DeSerializing proxy payload. Body length: " + payload.length());
         JSONObject headers = extractHeaders(payload);
         String body = extractBody(payload);
+        String query = getQuery(headers);
 
-        ProxyPayload proxyPayload = new ProxyPayload(headers.getString("path"), headers.getString("method"), body);
+        ProxyPayload proxyPayload = new ProxyPayload.Builder(headers.getString("path"), headers.getString("method"))
+                .body(body)
+                .query(query)
+                .build();
+
         logger.info("Proxy header. Path: " + proxyPayload.getPath() + ", Method: " + proxyPayload.getMethod());
         return proxyPayload;
+    }
+
+    private String getQuery(JSONObject headers) {
+        if (headers.has("query")) {
+            return headers.getString("query");
+        } else {
+            return null;
+        }
     }
 
     private JSONObject extractHeaders(String payload) {

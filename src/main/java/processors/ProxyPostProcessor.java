@@ -21,10 +21,20 @@ public class ProxyPostProcessor implements Processor {
         logger.info("Starting post processing of exchange received from other proxy.");
         String body = exchange.getIn().getBody(String.class);
         ProxyPayload payload = deserializer.deserialize(body);
-        exchange.getIn().setBody(payload.getBody());
+
         exchange.getIn().setHeader("path", payload.getPath());
         exchange.getIn().setHeader(Exchange.HTTP_METHOD, payload.getMethod());
+
+        if (payload.getBody().isPresent()) {
+            exchange.getIn().setBody(payload.getBody().get());
+        }
+
+        if (payload.getQuery().isPresent()) {
+            exchange.getIn().setHeader(Exchange.HTTP_QUERY, payload.getQuery().get());
+        }
+
         removeCamelRoutingHeaders(exchange);
+
     }
 
     private void removeCamelRoutingHeaders(Exchange exchange) {
