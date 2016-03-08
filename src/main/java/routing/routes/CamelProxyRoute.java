@@ -3,6 +3,7 @@ package routing.routes;
 import config.DilProxyConfig;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.model.ProcessorDefinition;
 import org.apache.camel.model.RouteDefinition;
 import processors.TimeoutExceptionHandler;
 import processors.WebServiceResponseProcessor;
@@ -25,12 +26,21 @@ public class CamelProxyRoute extends RouteBuilder {
 
         setupExceptionHandling();
 
-        RouteDefinition routeDefinition = from(routeBuilder.getListenUri());
+        ProcessorDefinition<RouteDefinition> routeDefinition = from(routeBuilder.getListenUri());
+
+        if (config.useCompression()) {
+            routeDefinition = routeDefinition.unmarshal().gzip();
+        }
+
         for (Processor processor: routeBuilder.getPostProcessors()) {
             routeDefinition = routeDefinition.process(processor);
         }
-        routeDefinition.toD("${header.path}" + "?bridgeEndpoint=true&throwExceptionOnFailure=false")
+        routeDefinition = routeDefinition.toD("${header.path}" + "?bridgeEndpoint=true&throwExceptionOnFailure=false")
                 .process(new WebServiceResponseProcessor());
+
+        if (config.useCompression()) {
+            routeDefinition.marshal().gzip();
+        }
     }
 
     private void setupExceptionHandling() {
