@@ -77,7 +77,7 @@ public class Proxy {
     private DilRouteBuilder createProtocolRoute() {
         switch (config.getSelectedProtocol()) {
             case AMQP:
-                AmqpRoute amqpRoute = new AmqpRoute(config.getAmqpConfig());
+                AmqpRoute amqpRoute = new AmqpRoute(config);
                 amqpRoute.addPreprocessor(new WebServiceRequestProcessor());
                 amqpRoute.addPreprocessor(new ProxyPreprocessor(new ProxyPayloadSerializer()));
                 amqpRoute.addPostProcessor(new ProxyPostProcessor());
