@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.ConnectException;
+import java.util.Optional;
 
 import static org.eclipse.californium.core.coap.CoAP.Code;
 import static org.eclipse.californium.core.coap.MediaTypeRegistry.TEXT_PLAIN;
@@ -18,15 +19,28 @@ class CoapProducer extends DefaultProducer {
     private final Logger logger = LoggerFactory.getLogger(CoapProducer.class);
 
     private final CamelCoapEndpoint endpoint;
+    private final Optional<Long> timeout;
 
-    public CoapProducer(CamelCoapEndpoint endpoint) {
+    public CoapProducer(CamelCoapEndpoint endpoint, long timeout) {
         super(endpoint);
         this.endpoint = endpoint;
+        this.timeout = Optional.of(timeout);
+    }
+
+    public CoapProducer(CamelCoapEndpoint camelCoapEndpoint) {
+        super(camelCoapEndpoint);
+        this.endpoint = camelCoapEndpoint;
+        this.timeout = Optional.empty();
     }
 
     @Override
     public void process(Exchange exchange) throws Exception {
         CoapClient client = new CoapClient(endpoint.getEndpointUri());
+        if (timeout.isPresent()) {
+            logger.info("Setting CoAp timeout to " + timeout.get() + " ms");
+            client.setTimeout(timeout.get());
+        }
+
         CoapResponse response = client.post(exchange.getIn().getBody().toString(), TEXT_PLAIN);
 
         if (response == null) {
