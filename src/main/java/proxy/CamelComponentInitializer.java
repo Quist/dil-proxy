@@ -31,7 +31,14 @@ public class CamelComponentInitializer {
     }
 
     private void addCoapComponent(DilProxyConfig config) {
-        CoapComponent coap = new CoapComponent(Integer.parseInt(config.getPort()));
+        CoapComponent coap;
+        int port = Integer.parseInt(config.getPort());
+        if (config.getTimeout().isPresent()) {
+            coap = new CoapComponent(port, config.getTimeout().get());
+        } else {
+            coap = new CoapComponent(Integer.parseInt(config.getPort()));
+        }
+
         camelContext.addComponent("coap", coap);
     }
 

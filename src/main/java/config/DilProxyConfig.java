@@ -12,6 +12,8 @@ public class DilProxyConfig {
     private final String targetProxyHostname;
     private final Protocol selectedProtocol;
 
+    private final Optional<Long> timeout;
+
     private Optional<AmqpConfig> amqpConfig = Optional.empty();
     private final Optional<MqttConfig> mqttConfig = Optional.empty();
 
@@ -22,6 +24,12 @@ public class DilProxyConfig {
         port = proxyConfig.getString("port");
         targetProxyHostname = proxyConfig.getString("targetProxyHostname");
         hostname = proxyConfig.getString("hostname");
+
+        if (proxyConfig.hasPath("timeout")) {
+            timeout = Optional.of(proxyConfig.getLong("timeout"));
+        } else {
+            timeout = Optional.empty();
+        }
 
         selectedProtocol = getProtocol(proxyConfig);
         setProtocolConfig(selectedProtocol, config);
@@ -88,5 +96,9 @@ public class DilProxyConfig {
                 break;
             }
         }
+    }
+
+    public Optional<Long> getTimeout() {
+        return timeout;
     }
 }
