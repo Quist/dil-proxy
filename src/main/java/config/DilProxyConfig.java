@@ -13,6 +13,7 @@ public class DilProxyConfig {
     private final Protocol selectedProtocol;
 
     private final Optional<Long> timeout;
+    private final long redeliverDelay;
 
     private Optional<AmqpConfig> amqpConfig = Optional.empty();
     private final Optional<MqttConfig> mqttConfig = Optional.empty();
@@ -29,6 +30,12 @@ public class DilProxyConfig {
             timeout = Optional.of(proxyConfig.getLong("timeout"));
         } else {
             timeout = Optional.empty();
+        }
+
+        if (proxyConfig.hasPath("redeliverDelay")) {
+            redeliverDelay = proxyConfig.getLong("redeliverDelay");
+        } else {
+            redeliverDelay = ConfigDefaults.redeliverDelay;
         }
 
         selectedProtocol = getProtocol(proxyConfig);
@@ -100,5 +107,9 @@ public class DilProxyConfig {
 
     public Optional<Long> getTimeout() {
         return timeout;
+    }
+
+    public long getRedeliverDelay() {
+        return redeliverDelay;
     }
 }

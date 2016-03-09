@@ -23,10 +23,10 @@ public class HttpRequestLogger implements Processor {
 
         stringBuilder.append("Received HTTP request:");
         stringBuilder.append("\n\n# Request info :");
-        stringBuilder.append("\nHttp method: " + request.getMethod());
-        stringBuilder.append("\nRequest URL: " + request.getRequestURL());
-        stringBuilder.append("\nPath header: " + request.getHeader("path"));
-        stringBuilder.append("\nQuery String: " + request.getQueryString());
+        stringBuilder.append("\nHttp method: ").append(request.getMethod());
+        stringBuilder.append("\nRequest URL: ").append(request.getRequestURL());
+        stringBuilder.append("\nPath header: ").append(request.getHeader("path"));
+        stringBuilder.append("\nQuery String: ").append(request.getQueryString());
 
         Enumeration<String> headerNames = request.getHeaderNames();
         stringBuilder.append("\n# HTTP Headers: ");

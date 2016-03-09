@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import java.net.ConnectException;
 import java.util.Optional;
 
-import static org.eclipse.californium.core.coap.CoAP.Code;
 import static org.eclipse.californium.core.coap.MediaTypeRegistry.TEXT_PLAIN;
 
 class CoapProducer extends DefaultProducer {
@@ -35,15 +34,16 @@ class CoapProducer extends DefaultProducer {
 
     @Override
     public void process(Exchange exchange) throws Exception {
+        logger.info("Producing CoAP request");
         CoapClient client = new CoapClient(endpoint.getEndpointUri());
         if (timeout.isPresent()) {
-            logger.info("Setting CoAp timeout to " + timeout.get() + " ms");
             client.setTimeout(timeout.get());
         }
 
         CoapResponse response = client.post(exchange.getIn().getBody().toString(), TEXT_PLAIN);
 
         if (response == null) {
+            client.shutdown();
             logger.warn("No CoAP response received.");
             exchange.getIn().setHeader(Exchange.HTTP_RESPONSE_CODE, HttpStatus.SC_GATEWAY_TIMEOUT);
             exchange.getIn().setBody("");

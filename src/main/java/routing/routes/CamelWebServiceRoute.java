@@ -1,7 +1,6 @@
 package routing.routes;
 
 import config.DilProxyConfig;
-import org.apache.camel.ExchangeTimedOutException;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.http.common.HttpOperationFailedException;
@@ -13,7 +12,6 @@ import processors.ResponseProcessor;
 import processors.TimeoutExceptionHandler;
 import routing.protocols.DilRouteBuilder;
 
-import java.net.ConnectException;
 
 
 public class CamelWebServiceRoute extends RouteBuilder {
@@ -32,6 +30,7 @@ public class CamelWebServiceRoute extends RouteBuilder {
         String fromPath = getFromPath();
 
         setupExceptionHandling();
+        setupErrorHandler();
 
         ProcessorDefinition<RouteDefinition> routeDefinition = from(fromPath);
         for(Processor processor: routeBuilder.getPreProcessors()) {
@@ -53,13 +52,20 @@ public class CamelWebServiceRoute extends RouteBuilder {
 
     }
 
+    private void setupErrorHandler() {
+
+        errorHandler(deadLetterChannel("mock:death")
+                .maximumRedeliveries(-1)
+                .redeliveryDelay(config.getRedeliverDelay()));
+    }
+
     private String getFromPath() {
         String hostname = String.format("%s:%s", config.getHostname(), config.getPort());
         return String.format("jetty:http://%s?matchOnUriPrefix=true", hostname);
     }
 
     private void setupExceptionHandling() {
-        onException(ExchangeTimedOutException.class, ConnectException.class, HttpOperationFailedException.class)
+        onException(HttpOperationFailedException.class)
                 .process(new TimeoutExceptionHandler())
                 .handled(true);
     }
