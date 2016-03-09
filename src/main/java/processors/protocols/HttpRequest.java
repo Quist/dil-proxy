@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
-import util.HttpRequestLogger;
+import processors.HttpRequestLogger;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -17,8 +17,6 @@ public class HttpRequest implements Processor {
         removeCamelRoutingHeaders(exchange);
 
         logger.info("Received an incoming HTTP request message from the other proxy.");
-        HttpServletRequest request = exchange.getIn(HttpMessage.class).getRequest();
-        new HttpRequestLogger().log(request, null);
     }
 
     private void removeCamelRoutingHeaders(Exchange exchange) {

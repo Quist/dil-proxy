@@ -5,9 +5,9 @@ import config.DilProxyConfig;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import processors.HttpRequestLogger;
 import processors.ProxyPostProcessor;
 import processors.ProxyPreprocessor;
-import processors.WebServiceRequestProcessor;
 import processors.protocols.AmqpRequest;
 import processors.protocols.HttpPreprocessor;
 import processors.protocols.HttpRequest;
@@ -78,22 +78,23 @@ public class Proxy {
         switch (config.getSelectedProtocol()) {
             case AMQP:
                 AmqpRoute amqpRoute = new AmqpRoute(config);
-                amqpRoute.addPreprocessor(new WebServiceRequestProcessor());
+                amqpRoute.addPreprocessor(new HttpRequestLogger());
                 amqpRoute.addPreprocessor(new ProxyPreprocessor(new ProxyPayloadSerializer()));
                 amqpRoute.addPostProcessor(new ProxyPostProcessor());
                 amqpRoute.addPostProcessor(new AmqpRequest());
                 return  amqpRoute;
             case HTTP:
                 HttpRoute httpRoute = new HttpRoute(config);
-                httpRoute.addPreprocessor(new WebServiceRequestProcessor());
+                httpRoute.addPreprocessor(new HttpRequestLogger());
                 httpRoute.addPreprocessor(new HttpPreprocessor());
                 httpRoute.addPostProcessor(new HttpRequest());
+                httpRoute.addPostProcessor(new HttpRequestLogger());
                 return httpRoute;
             case MQTT:
                 return new MqttRoute(config);
             case COAP:
                 CoapRoute coapRoute = new CoapRoute(config);
-                coapRoute.addPreprocessor(new WebServiceRequestProcessor());
+                coapRoute.addPreprocessor(new HttpRequestLogger());
                 coapRoute.addPreprocessor(new ProxyPreprocessor(new ProxyPayloadSerializer()));
                 coapRoute.addPostProcessor(new ProxyPostProcessor());
                 return coapRoute;
