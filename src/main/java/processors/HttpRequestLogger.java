@@ -8,36 +8,32 @@ import org.slf4j.LoggerFactory;
 import org.apache.camel.Processor;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Map;
 
 public class HttpRequestLogger implements Processor {
     private final Logger logger = LoggerFactory.getLogger(HttpRequestLogger.class);
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        HttpServletRequest request = exchange.getIn(HttpMessage.class).getRequest();
-        log(request);
-    }
-
-    private void log(HttpServletRequest request) {
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append("Received HTTP request:");
         stringBuilder.append("\n\n# Request info :");
-        stringBuilder.append("\nHttp method: ").append(request.getMethod());
-        stringBuilder.append("\nRequest URL: ").append(request.getRequestURL());
-        stringBuilder.append("\nPath header: ").append(request.getHeader("path"));
-        stringBuilder.append("\nQuery String: ").append(request.getQueryString());
+        stringBuilder.append("\nHttp method: ").append(exchange.getIn().getHeader(Exchange.HTTP_METHOD));
+        stringBuilder.append("\nRequest URL: ").append(exchange.getIn().getHeader(Exchange.HTTP_SERVLET_REQUEST));
+        stringBuilder.append("\nPath header: ").append(exchange.getIn().getHeader("path"));
+        stringBuilder.append("\nQuery String: ").append(exchange.getIn().getHeader(Exchange.HTTP_QUERY));
 
-        Enumeration<String> headerNames = request.getHeaderNames();
+        Iterator<String> headerIterator = exchange.getIn().getHeaders().keySet().iterator();
         stringBuilder.append("\n# HTTP Headers: ");
-        while(headerNames.hasMoreElements()){
-            String headerName = headerNames.nextElement();
-            stringBuilder.append((String.format("\n%s: %s", headerName, request.getHeader(headerName))));
+        while(headerIterator.hasNext()){
+            String headerName = headerIterator.next();
+            stringBuilder.append((String.format("\n%s: %s", headerName, exchange.getIn().getHeader(headerName))));
         }
 
         stringBuilder.append("\n");
         logger.info(stringBuilder.toString());
     }
-
 
 }
