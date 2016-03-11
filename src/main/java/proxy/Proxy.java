@@ -87,6 +87,8 @@ public class Proxy {
                 HttpRoute httpRoute = new HttpRoute(config);
                 httpRoute.addPreprocessor(new HttpRequestLogger());
                 httpRoute.addPreprocessor(new HttpPreprocessor());
+                httpRoute.addPreprocessor(new ProxyPreprocessor(new ProxyPayloadSerializer()));
+                httpRoute.addPostProcessor(new ProxyPostProcessor());
                 httpRoute.addPostProcessor(new HttpRequest());
                 httpRoute.addPostProcessor(new HttpRequestLogger());
                 return httpRoute;

@@ -1,6 +1,7 @@
 package routing.routes;
 
 import config.DilProxyConfig;
+import org.apache.camel.LoggingLevel;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.http.common.HttpOperationFailedException;
@@ -9,6 +10,7 @@ import org.apache.camel.model.RouteDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import processors.ResponseProcessor;
+import processors.ServerErrorHandler;
 import processors.TimeoutExceptionHandler;
 import routing.protocols.DilRouteBuilder;
 
@@ -43,20 +45,26 @@ public class CamelWebServiceRoute extends RouteBuilder {
         }
 
         routeDefinition = routeDefinition.to(routeBuilder.getToUri());
-
-        if (config.useCompression()) {
-            routeDefinition = routeDefinition.unmarshal().gzip();
-        }
-
         routeDefinition.process(new ResponseProcessor());
 
+        if (config.useCompression()) {
+            routeDefinition.unmarshal().gzip();
+        }
     }
 
     private void setupErrorHandler() {
 
         errorHandler(deadLetterChannel("mock:death")
                 .maximumRedeliveries(-1)
-                .redeliveryDelay(config.getRedeliverDelay()));
+                .redeliveryDelay(config.getRedeliverDelay())
+                .logHandled(true)
+                .logNewException(true)
+                .logExhaustedMessageHistory(true)
+                .logExhausted(true)
+                .logStackTrace(true)
+                .loggingLevel(LoggingLevel.WARN)
+                .logRetryStackTrace(true)
+        );
     }
 
     private String getFromPath() {
@@ -68,5 +76,8 @@ public class CamelWebServiceRoute extends RouteBuilder {
         onException(HttpOperationFailedException.class)
                 .process(new TimeoutExceptionHandler())
                 .handled(true);
+
+        onException(Exception.class)
+                .process(new ServerErrorHandler());
     }
 }

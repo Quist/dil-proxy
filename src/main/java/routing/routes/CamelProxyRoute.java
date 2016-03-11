@@ -1,10 +1,12 @@
 package routing.routes;
 
 import config.DilProxyConfig;
+import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.ProcessorDefinition;
 import org.apache.camel.model.RouteDefinition;
+import processors.ServerErrorHandler;
 import processors.TimeoutExceptionHandler;
 import processors.WebServiceResponseProcessor;
 import routing.protocols.DilRouteBuilder;
@@ -47,5 +49,8 @@ public class CamelProxyRoute extends RouteBuilder {
         onException(ConnectException.class)
                 .process(new TimeoutExceptionHandler())
                 .handled(true);
+
+        onException(Exception.class)
+                .process(new ServerErrorHandler());
     }
 }

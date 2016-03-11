@@ -16,5 +16,6 @@ public class HttpPreprocessor implements Processor {
         logger.info("Pre processing http message before sending to other proxy.");
         HttpServletRequest req = exchange.getIn(HttpMessage.class).getRequest();
         exchange.getIn().setHeader("path", req.getRequestURL());
+        exchange.getIn().setHeader(Exchange.HTTP_METHOD, "POST");
     }
 }
