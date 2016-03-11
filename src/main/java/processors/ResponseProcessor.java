@@ -6,9 +6,6 @@ import org.eclipse.jetty.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/*
- * Generic response processor
- */
 public class ResponseProcessor implements Processor {
 
     private final Logger logger = LoggerFactory.getLogger(ResponseProcessor.class);
