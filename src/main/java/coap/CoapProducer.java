@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import java.net.ConnectException;
 import java.util.Optional;
 
-import static org.eclipse.californium.core.coap.MediaTypeRegistry.TEXT_PLAIN;
 
 class CoapProducer extends DefaultProducer {
     private final Logger logger = LoggerFactory.getLogger(CoapProducer.class);
@@ -40,7 +39,7 @@ class CoapProducer extends DefaultProducer {
             client.setTimeout(timeout.get());
         }
 
-        CoapResponse response = client.post(exchange.getIn().getBody().toString(), TEXT_PLAIN);
+        CoapResponse response = client.post(exchange.getIn().getBody(byte[].class), MediaTypeRegistry.APPLICATION_OCTET_STREAM);
 
         if (response == null) {
             client.shutdown();
@@ -51,7 +50,7 @@ class CoapProducer extends DefaultProducer {
         } else {
             logger.info("CoAP response received. Status code: " + response.getCode());
 
-            exchange.getIn().setBody(response.getResponseText());
+            exchange.getIn().setBody(response.getPayload());
             exchange.getIn().setHeader(Exchange.HTTP_RESPONSE_CODE, getHttpStatusCode(response.getCode()));
         }
     }

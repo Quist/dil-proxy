@@ -4,6 +4,7 @@ import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.eclipse.californium.core.CoapResource;
+import org.eclipse.californium.core.coap.MediaTypeRegistry;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,12 +44,12 @@ class CamelCoapResource extends CoapResource {
         if (e != null) {
             coapExchange.respond(INTERNAL_SERVER_ERROR, e.getMessage());
         } else {
-            String body = camelExchange.getIn().getBody(String.class);
+            byte body[] = camelExchange.getOut().getBody(byte[].class);
 
             int httpStatusCode = (int) camelExchange.getIn().getHeader(Exchange.HTTP_RESPONSE_CODE);
             ResponseCode responseCode = getResponseCode(httpStatusCode);
             logger.info("Responding to CoAP request. CoAP response code: " + responseCode);
-            coapExchange.respond(responseCode, body);
+            coapExchange.respond(responseCode, body, MediaTypeRegistry.APPLICATION_OCTET_STREAM);
         }
     }
 
@@ -75,8 +76,8 @@ class CamelCoapResource extends CoapResource {
     private Exchange convertExchange(CoapExchange coapExchange) {
         Exchange camelExchange = endpoint.createExchange();
 
-        String body = new String(coapExchange.getRequestPayload());
-        camelExchange.getIn().setBody(body);
+        byte bytes[] = coapExchange.getRequestPayload();
+        camelExchange.getIn().setBody(bytes);
         camelExchange.getIn().setHeader(Exchange.HTTP_METHOD, "GET");
         return camelExchange;
     }
