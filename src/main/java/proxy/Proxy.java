@@ -63,6 +63,8 @@ public class Proxy {
             addRoutes();
             camelContext.start();
             logger.info("Proxy started and listening on " + config.getHostname() + " port " + config.getPort());
+            logger.info("Opposite proxy located at " + config.getTargetProxyHostname());
+            logger.info("Compression setting: " + config.useCompression());
         } catch (Exception e) {
             e.printStackTrace();
         }
