@@ -33,7 +33,7 @@ public class HttpRequestLogger implements Processor {
         }
 
         stringBuilder.append("\n");
-        logger.info(stringBuilder.toString());
+        logger.debug(stringBuilder.toString());
     }
 
 }

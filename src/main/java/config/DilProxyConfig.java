@@ -1,6 +1,7 @@
 package config;
 
 import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import proxy.Protocol;
 import java.util.Optional;
 import static proxy.Protocol.*;
@@ -19,6 +20,7 @@ public class DilProxyConfig {
     private final Optional<MqttConfig> mqttConfig = Optional.empty();
 
     public DilProxyConfig(Config config) {
+        config = config.withFallback(ConfigFactory.load());
         Config proxyConfig = config.getConfig("proxy");
 
         useCompression = proxyConfig.getBoolean("useCompression");
