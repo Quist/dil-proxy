@@ -15,5 +15,9 @@ public class WebServiceResponseProcessor implements Processor {
         int httpStatusCode = (int) exchange.getIn().getHeader(Exchange.HTTP_RESPONSE_CODE);
         logger.info("Received response from Web service. HTTP status: " + httpStatusCode + " - " + HttpStatus.getMessage(httpStatusCode));
         logger.info(" Forwarding response to the other proxy.");
+	
+	if (exchange.getIn().getBody() == null) {
+		exchange.getIn().setBody("");
+	} 
     }
 }
