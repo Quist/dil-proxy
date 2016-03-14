@@ -14,20 +14,22 @@ public class AmqpRequest implements Processor {
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        logger.info("Received AMQP request from proxy. Headers: ");
+        logger.info("Received AMQP request from proxy.");
         printHeaders(exchange);
     }
 
     private void printHeaders(Exchange exchange) {
+        logger.trace("Exchange headers: ");
+
         Iterator<String> iterator = exchange.getIn().getHeaders().keySet().iterator();
         Message in = exchange.getIn();
         while(iterator.hasNext()) {
             String headerName = iterator.next();
             Object headerValue = in.getHeader(headerName);
             if (headerValue != null) {
-                logger.info(headerName + ": " + headerValue);
+                logger.trace(headerName + ": " + headerValue);
             } else {
-                logger.info(headerName + ": ");
+                logger.trace(headerName + ": ");
             }
         }
     }
