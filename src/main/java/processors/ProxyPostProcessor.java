@@ -18,7 +18,7 @@ public class ProxyPostProcessor implements Processor {
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        logger.info("Starting post processing of exchange received from other proxy.");
+        logger.debug("Starting post processing of exchange received from other proxy.");
         String body = exchange.getIn().getBody(String.class);
         ProxyPayload payload = deserializer.deserialize(body);
 

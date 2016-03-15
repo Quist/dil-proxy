@@ -8,7 +8,7 @@ public class ProxyPayloadDeserializer {
     private final static Logger logger = LoggerFactory.getLogger(ProxyPayloadDeserializer.class);
 
     public ProxyPayload deserialize(String payload) {
-        logger.info("DeSerializing proxy payload. Body length: " + payload.length());
+        logger.debug("DeSerializing proxy payload. Body length: " + payload.length());
         JSONObject headers = extractHeaders(payload);
         String body = extractBody(payload);
         String query = getQuery(headers);
@@ -18,7 +18,7 @@ public class ProxyPayloadDeserializer {
                 .query(query)
                 .build();
 
-        logger.info("Proxy header. Path: " + proxyPayload.getPath() + ", Method: " + proxyPayload.getMethod());
+        logger.debug("Proxy header. Path: " + proxyPayload.getPath() + ", Method: " + proxyPayload.getMethod());
         return proxyPayload;
     }
 

@@ -12,7 +12,7 @@ public class HttpRequest implements Processor {
     public void process(Exchange exchange) throws Exception {
         removeCamelRoutingHeaders(exchange);
 
-        logger.info("Received an incoming HTTP request message from the other proxy.");
+        logger.info("Received incoming HTTP request message from proxy.");
     }
 
     private void removeCamelRoutingHeaders(Exchange exchange) {
