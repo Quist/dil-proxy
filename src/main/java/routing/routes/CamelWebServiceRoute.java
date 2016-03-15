@@ -10,10 +10,8 @@ import org.apache.camel.model.RouteDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import processors.ResponseProcessor;
-import processors.ServerErrorHandler;
 import processors.TimeoutExceptionHandler;
 import routing.protocols.DilRouteBuilder;
-
 
 
 public class CamelWebServiceRoute extends RouteBuilder {
@@ -76,8 +74,5 @@ public class CamelWebServiceRoute extends RouteBuilder {
         onException(HttpOperationFailedException.class)
                 .process(new TimeoutExceptionHandler())
                 .handled(true);
-
-        onException(Exception.class)
-                .process(new ServerErrorHandler());
     }
 }

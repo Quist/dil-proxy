@@ -11,7 +11,7 @@ public class ServerErrorHandler implements Processor {
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        logger.error("Exception occurred. Returning 500.");
+        logger.error("Uncaught exception occurred. Returning 500.");
         exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, HttpStatus.SC_INTERNAL_SERVER_ERROR);
     }
 }
