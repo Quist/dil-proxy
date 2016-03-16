@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import java.net.ConnectException;
 import java.util.Optional;
 
-
 class CoapProducer extends DefaultProducer {
     private final Logger logger = LoggerFactory.getLogger(CoapProducer.class);
 
@@ -65,6 +64,8 @@ class CoapProducer extends DefaultProducer {
                 return HttpStatus.SC_NO_CONTENT;
             case NOT_FOUND:
                 return HttpStatus.SC_NOT_FOUND;
+            case UNAUTHORIZED:
+                return HttpStatus.SC_UNAUTHORIZED;
             case INTERNAL_SERVER_ERROR:
                 return HttpStatus.SC_INTERNAL_SERVER_ERROR;
             case GATEWAY_TIMEOUT:
