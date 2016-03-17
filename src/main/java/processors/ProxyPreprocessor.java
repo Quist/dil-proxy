@@ -5,15 +5,15 @@ import org.apache.camel.Processor;
 import org.apache.camel.http.common.HttpMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import proxy.serializer.ProxyPayloadSerializer;
+import proxy.serializer.ProxyMessageSerializer;
 
 import javax.servlet.http.HttpServletRequest;
 
 public class ProxyPreprocessor implements Processor {
     private final Logger logger = LoggerFactory.getLogger(ProxyPreprocessor.class);
-    private final ProxyPayloadSerializer serializer;
+    private final ProxyMessageSerializer serializer;
 
-    public ProxyPreprocessor(ProxyPayloadSerializer serializer) {
+    public ProxyPreprocessor(ProxyMessageSerializer serializer) {
         this.serializer = serializer;
     }
 
