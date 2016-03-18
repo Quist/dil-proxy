@@ -11,7 +11,7 @@ import processors.ProxyPreprocessor;
 import processors.protocols.AmqpRequest;
 import processors.protocols.HttpPreprocessor;
 import processors.protocols.HttpRequest;
-import proxy.serializer.ProxyPayloadSerializer;
+import proxy.serializer.ProxyMessageSerializer;
 import routing.protocols.*;
 import routing.routes.CamelProxyRoute;
 import routing.routes.CamelWebServiceRoute;
@@ -82,7 +82,7 @@ public class Proxy {
             case AMQP:
                 AmqpRoute amqpRoute = new AmqpRoute(config);
                 amqpRoute.addPreprocessor(new HttpRequestLogger());
-                amqpRoute.addPreprocessor(new ProxyPreprocessor(new ProxyPayloadSerializer()));
+                amqpRoute.addPreprocessor(new ProxyPreprocessor(new ProxyMessageSerializer()));
                 amqpRoute.addPostProcessor(new ProxyPostProcessor());
                 amqpRoute.addPostProcessor(new AmqpRequest());
                 return  amqpRoute;
@@ -90,7 +90,7 @@ public class Proxy {
                 HttpRoute httpRoute = new HttpRoute(config);
                 httpRoute.addPreprocessor(new HttpRequestLogger());
                 httpRoute.addPreprocessor(new HttpPreprocessor());
-                httpRoute.addPreprocessor(new ProxyPreprocessor(new ProxyPayloadSerializer()));
+                httpRoute.addPreprocessor(new ProxyPreprocessor(new ProxyMessageSerializer()));
                 httpRoute.addPostProcessor(new ProxyPostProcessor());
                 httpRoute.addPostProcessor(new HttpRequest());
                 httpRoute.addPostProcessor(new HttpRequestLogger());
@@ -100,7 +100,7 @@ public class Proxy {
             case COAP:
                 CoapRoute coapRoute = new CoapRoute(config);
                 coapRoute.addPreprocessor(new HttpRequestLogger());
-                coapRoute.addPreprocessor(new ProxyPreprocessor(new ProxyPayloadSerializer()));
+                coapRoute.addPreprocessor(new ProxyPreprocessor(new ProxyMessageSerializer()));
                 coapRoute.addPostProcessor(new ProxyPostProcessor());
                 return coapRoute;
             default:

@@ -4,22 +4,22 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ProxyPayloadDeserializer {
-    private final static Logger logger = LoggerFactory.getLogger(ProxyPayloadDeserializer.class);
+public class ProxyMessageDeserializer {
+    private final static Logger logger = LoggerFactory.getLogger(ProxyMessageDeserializer.class);
 
-    public ProxyPayload deserialize(String payload) {
+    public ProxyMessage deserialize(String payload) {
         logger.debug("DeSerializing proxy payload. Body length: " + payload.length());
         JSONObject headers = extractHeaders(payload);
         String body = extractBody(payload);
         String query = getQuery(headers);
 
-        ProxyPayload proxyPayload = new ProxyPayload.Builder(headers.getString("path"), headers.getString("method"))
+        ProxyMessage proxyMessage = new ProxyMessage.Builder(headers.getString("path"), headers.getString("method"), headers.getJSONObject("headers"))
                 .body(body)
                 .query(query)
                 .build();
 
-        logger.debug("Proxy header. Path: " + proxyPayload.getPath() + ", Method: " + proxyPayload.getMethod());
-        return proxyPayload;
+        logger.debug("Proxy header. Path: " + proxyMessage.getPath() + ", Method: " + proxyMessage.getMethod());
+        return proxyMessage;
     }
 
     private String getQuery(JSONObject headers) {
@@ -45,9 +45,14 @@ public class ProxyPayloadDeserializer {
     }
 
     private int getHeaderEndPosition(String payload) {
+        int openBraces = 0;
         for(int i = 0; i < payload.length(); i++) {
-            if (payload.charAt(i) == '}') {
+            if (payload.charAt(i) == '}' && openBraces == 1) {
                 return i;
+            } else if(payload.charAt(i) == '{') {
+                openBraces++;
+            } else if (payload.charAt(i) == '}') {
+                openBraces--;
             }
         }
         return payload.length();

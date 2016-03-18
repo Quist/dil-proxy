@@ -6,6 +6,7 @@ import org.apache.camel.Processor;
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.coap.MediaTypeRegistry;
 import org.eclipse.californium.core.server.resources.CoapExchange;
+import org.eclipse.californium.core.server.resources.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,6 +71,8 @@ class CamelCoapResource extends CoapResource {
                 return ResponseCode.CREATED;
             case 204 :
                 return ResponseCode.DELETED;
+            case 401 :
+                return ResponseCode.UNAUTHORIZED;
             case 404 :
                 return ResponseCode.NOT_FOUND;
             case 500 :
@@ -77,8 +80,17 @@ class CamelCoapResource extends CoapResource {
             case 504 :
                 return ResponseCode.GATEWAY_TIMEOUT;
             default:
-                logger.info("Unknown HTTP code. Setting default success code");
-                return ResponseCode._UNKNOWN_SUCCESS_CODE;
+                if(httpStatusCode >= 200 && httpStatusCode < 300) {
+                    logger.warn("Unknown HTTP code. Setting default success code");
+                    return ResponseCode._UNKNOWN_SUCCESS_CODE;
+                } else if (httpStatusCode >= 400 && httpStatusCode < 500) {
+                    logger.warn("Unknown HTTP code. Setting BAD REQUEST");
+                    return ResponseCode.BAD_REQUEST;
+                } else {
+                    logger.warn("Unknown HTTP code. Setting internal server error");
+                    return ResponseCode.INTERNAL_SERVER_ERROR;
+                }
+
         }
     }
 
