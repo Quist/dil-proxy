@@ -1,13 +1,15 @@
 package proxy.serializer;
 
+import org.apache.camel.http.common.HttpMessage;
 import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 
-public class ProxyMessageSerializer {
+public class ProxyRequestSerializer  {
 
-    public String serialize(HttpServletRequest request) {
+    public String serialize(HttpMessage message) {
+        HttpServletRequest request = message.getRequest();
         JSONObject header = new JSONObject();
         header.put("path", request.getRequestURL());
         header.put("method", request.getMethod());

@@ -4,18 +4,19 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import proxy.serializer.ProxyHeaderDeserializer;
 import proxy.serializer.ProxyMessage;
-import proxy.serializer.ProxyMessageDeserializer;
+import proxy.serializer.ProxyRequestDeserializer;
 
 import java.util.Iterator;
 
 public class ProxyPostProcessor implements Processor {
     private final Logger logger = LoggerFactory.getLogger(ProxyPostProcessor.class);
 
-    private final ProxyMessageDeserializer deserializer;
+    private final ProxyRequestDeserializer deserializer;
 
     public ProxyPostProcessor() {
-        this.deserializer = new ProxyMessageDeserializer();
+        this.deserializer = new ProxyRequestDeserializer(new ProxyHeaderDeserializer());
     }
 
     @Override

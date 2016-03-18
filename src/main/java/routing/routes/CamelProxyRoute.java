@@ -1,14 +1,14 @@
 package routing.routes;
 
 import config.DilProxyConfig;
-import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.ProcessorDefinition;
 import org.apache.camel.model.RouteDefinition;
-import processors.ServerErrorHandler;
-import processors.TimeoutExceptionHandler;
+import processors.errorhandlers.ServerErrorHandler;
+import processors.errorhandlers.TimeoutExceptionHandler;
 import processors.WebServiceResponseProcessor;
+import proxy.serializer.ProxyResponseSerializer;
 import routing.protocols.DilRouteBuilder;
 
 import java.net.ConnectException;
@@ -38,7 +38,7 @@ public class CamelProxyRoute extends RouteBuilder {
             routeDefinition = routeDefinition.process(processor);
         }
         routeDefinition = routeDefinition.toD("${header.path}" + "?bridgeEndpoint=true&throwExceptionOnFailure=false")
-                .process(new WebServiceResponseProcessor());
+                .process(new WebServiceResponseProcessor(new ProxyResponseSerializer()));
 
         if (config.useCompression()) {
             routeDefinition.marshal().gzip();

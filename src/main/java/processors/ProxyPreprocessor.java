@@ -5,15 +5,15 @@ import org.apache.camel.Processor;
 import org.apache.camel.http.common.HttpMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import proxy.serializer.ProxyMessageSerializer;
+import proxy.serializer.ProxyRequestSerializer;
 
 import javax.servlet.http.HttpServletRequest;
 
 public class ProxyPreprocessor implements Processor {
     private final Logger logger = LoggerFactory.getLogger(ProxyPreprocessor.class);
-    private final ProxyMessageSerializer serializer;
+    private final ProxyRequestSerializer serializer;
 
-    public ProxyPreprocessor(ProxyMessageSerializer serializer) {
+    public ProxyPreprocessor(ProxyRequestSerializer serializer) {
         this.serializer = serializer;
     }
 
@@ -22,8 +22,8 @@ public class ProxyPreprocessor implements Processor {
     public void process(Exchange exchange) throws Exception {
         logger.info("Starting pre processing exchange before sending to other proxy.");
 
-        HttpServletRequest req = exchange.getIn(HttpMessage.class).getRequest();
-        String proxyHeader = serializer.serialize(req);
+        HttpMessage httpMessage = exchange.getIn(HttpMessage.class);
+        String proxyHeader = serializer.serialize(httpMessage);
 
         String body = exchange.getIn().getBody(String.class);
         body = proxyHeader + body;
