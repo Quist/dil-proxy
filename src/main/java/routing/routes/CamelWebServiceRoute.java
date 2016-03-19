@@ -9,6 +9,7 @@ import org.apache.camel.model.ProcessorDefinition;
 import org.apache.camel.model.RouteDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import processors.ProxyResponseProcessor;
 import processors.WebServiceResponseProcessor;
 import processors.errorhandlers.TimeoutExceptionHandler;
 import proxy.serializer.ProxyResponseSerializer;
@@ -44,7 +45,7 @@ public class CamelWebServiceRoute extends RouteBuilder {
         }
 
         routeDefinition = routeDefinition.to(routeBuilder.getToUri());
-        routeDefinition.process(new WebServiceResponseProcessor(new ProxyResponseSerializer()));
+        routeDefinition.process(new ProxyResponseProcessor());
 
         if (config.useCompression()) {
             routeDefinition.unmarshal().gzip();
