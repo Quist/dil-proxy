@@ -37,7 +37,7 @@ public class CamelProxyRoute extends RouteBuilder {
         for (Processor processor: routeBuilder.getPostProcessors()) {
             routeDefinition = routeDefinition.process(processor);
         }
-        routeDefinition = routeDefinition.toD("${header.path}" + "?bridgeEndpoint=true&throwExceptionOnFailure=false")
+        routeDefinition = routeDefinition.toD("${header.Dil-Path}" + "?bridgeEndpoint=true&throwExceptionOnFailure=false")
                 .process(new ProxyResponsePreProcessor(new ProxyResponseSerializer()));
 
         if (config.useCompression()) {

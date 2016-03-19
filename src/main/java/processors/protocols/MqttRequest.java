@@ -22,7 +22,7 @@ class MqttRequest implements Processor {
         String body = exchange.getIn().getBody(String.class);
         ProxyMessage payload = deserializer.deserialize(body);
         exchange.getIn().setBody(payload.getBody());
-        exchange.getIn().setHeader("path", payload.getPath());
+        exchange.getIn().setHeader("Dil-Path", payload.getPath());
     }
 
 }

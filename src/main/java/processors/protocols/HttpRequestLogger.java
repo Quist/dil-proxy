@@ -18,7 +18,7 @@ public class HttpRequestLogger implements Processor {
         stringBuilder.append("\n\n# Request info :");
         stringBuilder.append("\nHttp method: ").append(exchange.getIn().getHeader(Exchange.HTTP_METHOD));
         stringBuilder.append("\nRequest URL: ").append(exchange.getIn().getHeader(Exchange.HTTP_SERVLET_REQUEST));
-        stringBuilder.append("\nPath header: ").append(exchange.getIn().getHeader("path"));
+        stringBuilder.append("\nPath header: ").append(exchange.getIn().getHeader("Dil-Path"));
         stringBuilder.append("\nQuery String: ").append(exchange.getIn().getHeader(Exchange.HTTP_QUERY));
 
         Iterator<String> headerIterator = exchange.getIn().getHeaders().keySet().iterator();

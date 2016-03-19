@@ -34,7 +34,7 @@ public class ProxyRequestPostProcessor implements Processor {
     }
 
     private void setHttpHeaders(Exchange exchange, ProxyMessage proxyMessage) {
-        exchange.getIn().setHeader("path", proxyMessage.getPath());
+        exchange.getIn().setHeader("Dil-Path", proxyMessage.getPath());
         exchange.getIn().setHeader(Exchange.HTTP_METHOD, proxyMessage.getMethod());
         if (proxyMessage.getQuery().isPresent()) {
             exchange.getIn().setHeader(Exchange.HTTP_QUERY, proxyMessage.getQuery().get());
