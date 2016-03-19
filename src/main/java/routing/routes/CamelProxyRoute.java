@@ -7,7 +7,7 @@ import org.apache.camel.model.ProcessorDefinition;
 import org.apache.camel.model.RouteDefinition;
 import processors.errorhandlers.ServerErrorHandler;
 import processors.errorhandlers.TimeoutExceptionHandler;
-import processors.WebServiceResponseProcessor;
+import processors.ProxyResponsePreProcessor;
 import proxy.serializer.ProxyResponseSerializer;
 import routing.protocols.DilRouteBuilder;
 
@@ -38,7 +38,7 @@ public class CamelProxyRoute extends RouteBuilder {
             routeDefinition = routeDefinition.process(processor);
         }
         routeDefinition = routeDefinition.toD("${header.path}" + "?bridgeEndpoint=true&throwExceptionOnFailure=false")
-                .process(new WebServiceResponseProcessor(new ProxyResponseSerializer()));
+                .process(new ProxyResponsePreProcessor(new ProxyResponseSerializer()));
 
         if (config.useCompression()) {
             routeDefinition.marshal().gzip();

@@ -5,27 +5,26 @@ import config.DilProxyConfig;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import processors.HttpRequestLogger;
-import processors.ProxyPostProcessor;
-import processors.ProxyPreprocessor;
+import processors.protocols.HttpRequestLogger;
+import processors.ProxyRequestPostProcessor;
+import processors.ProxyRequestPreprocessor;
 import processors.protocols.AmqpRequest;
 import processors.protocols.HttpPreprocessor;
-import processors.protocols.HttpRequest;
 import proxy.serializer.ProxyRequestSerializer;
 import routing.protocols.*;
 import routing.routes.CamelProxyRoute;
 import routing.routes.CamelWebServiceRoute;
 
 import java.io.File;
+import java.net.MalformedURLException;
 
 public class Proxy {
 
     private final Logger logger = LoggerFactory.getLogger(Proxy.class);
     private final DefaultCamelContext camelContext;
     private final DilProxyConfig config;
-    private final CamelComponentInitializer camelComponentInitializer;
 
-    public static void main(String args[]) {
+    public static void main(String args[]) throws MalformedURLException {
 
         if (args.length < 1) {
             printUsage();
@@ -41,9 +40,8 @@ public class Proxy {
         DilProxyConfig config = new DilProxyConfig(ConfigFactory.parseFile(configFile));
 
         DefaultCamelContext defaultCamelContext = new DefaultCamelContext();
-        CamelComponentInitializer componentInitializer = new CamelComponentInitializer(defaultCamelContext);
-
-        Proxy proxy = new Proxy(config, defaultCamelContext, componentInitializer);
+        new CamelComponentInitializer(defaultCamelContext).init(config);
+        Proxy proxy = new Proxy(config, defaultCamelContext);
         proxy.start();
     }
 
@@ -51,15 +49,13 @@ public class Proxy {
         System.out.println("Usage: proxy configFile");
     }
 
-    public Proxy(DilProxyConfig config, DefaultCamelContext camelContext, CamelComponentInitializer camelComponentInitializer) {
+    public Proxy(DilProxyConfig config, DefaultCamelContext camelContext) {
         this.camelContext = camelContext;
         this.config = config;
-        this.camelComponentInitializer = camelComponentInitializer;
     }
 
     public void start()  {
         try {
-            camelComponentInitializer.init(config);
             addRoutes();
             camelContext.start();
             logger.info("Proxy started and listening on " + config.getHostname() + ", port " + config.getPort());
@@ -82,26 +78,25 @@ public class Proxy {
             case AMQP:
                 AmqpRoute amqpRoute = new AmqpRoute(config);
                 amqpRoute.addPreprocessor(new HttpRequestLogger());
-                amqpRoute.addPreprocessor(new ProxyPreprocessor(new ProxyRequestSerializer()));
-                amqpRoute.addPostProcessor(new ProxyPostProcessor());
+                amqpRoute.addPreprocessor(new ProxyRequestPreprocessor(new ProxyRequestSerializer()));
+                amqpRoute.addPostProcessor(new ProxyRequestPostProcessor());
                 amqpRoute.addPostProcessor(new AmqpRequest());
                 return  amqpRoute;
             case HTTP:
                 HttpRoute httpRoute = new HttpRoute(config);
                 httpRoute.addPreprocessor(new HttpRequestLogger());
                 httpRoute.addPreprocessor(new HttpPreprocessor());
-                httpRoute.addPreprocessor(new ProxyPreprocessor(new ProxyRequestSerializer()));
-                httpRoute.addPostProcessor(new ProxyPostProcessor());
-                httpRoute.addPostProcessor(new HttpRequest());
+                httpRoute.addPreprocessor(new ProxyRequestPreprocessor(new ProxyRequestSerializer()));
+                httpRoute.addPostProcessor(new ProxyRequestPostProcessor());
                 httpRoute.addPostProcessor(new HttpRequestLogger());
                 return httpRoute;
             case MQTT:
-                return new MqttRoute(config);
+                throw new IllegalArgumentException("MQTT is not implemented");
             case COAP:
                 CoapRoute coapRoute = new CoapRoute(config);
                 coapRoute.addPreprocessor(new HttpRequestLogger());
-                coapRoute.addPreprocessor(new ProxyPreprocessor(new ProxyRequestSerializer()));
-                coapRoute.addPostProcessor(new ProxyPostProcessor());
+                coapRoute.addPreprocessor(new ProxyRequestPreprocessor(new ProxyRequestSerializer()));
+                coapRoute.addPostProcessor(new ProxyRequestPostProcessor());
                 return coapRoute;
             default:
                 logger.error("No configuration for: " + config.getSelectedProtocol());

@@ -8,14 +8,12 @@ import proxy.serializer.ProxyHeaderDeserializer;
 import proxy.serializer.ProxyMessage;
 import proxy.serializer.ProxyRequestDeserializer;
 
-import java.util.Iterator;
-
-public class ProxyPostProcessor implements Processor {
-    private final Logger logger = LoggerFactory.getLogger(ProxyPostProcessor.class);
+public class ProxyRequestPostProcessor implements Processor {
+    private final Logger logger = LoggerFactory.getLogger(ProxyRequestPostProcessor.class);
 
     private final ProxyRequestDeserializer deserializer;
 
-    public ProxyPostProcessor() {
+    public ProxyRequestPostProcessor() {
         this.deserializer = new ProxyRequestDeserializer(new ProxyHeaderDeserializer());
     }
 
@@ -43,9 +41,7 @@ public class ProxyPostProcessor implements Processor {
             exchange.getIn().setHeader(Exchange.HTTP_QUERY, proxyMessage.getQuery().get());
         }
 
-        Iterator<String> it = proxyMessage.getHttpHeaders().keySet().iterator();
-        while (it.hasNext()) {
-            String headerName = it.next();
+        for (String headerName : proxyMessage.getHttpHeaders().keySet()) {
             String headerValue = proxyMessage.getHttpHeaders().get(headerName);
             exchange.getIn().setHeader(headerName, headerValue);
         }

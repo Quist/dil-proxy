@@ -9,10 +9,8 @@ import org.apache.camel.model.ProcessorDefinition;
 import org.apache.camel.model.RouteDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import processors.ProxyResponseProcessor;
-import processors.WebServiceResponseProcessor;
+import processors.ProxyResponsePostProcessor;
 import processors.errorhandlers.TimeoutExceptionHandler;
-import proxy.serializer.ProxyResponseSerializer;
 import routing.protocols.DilRouteBuilder;
 
 
@@ -29,12 +27,9 @@ public class CamelWebServiceRoute extends RouteBuilder {
 
     @Override
     public void configure() throws Exception {
-        String fromPath = getFromPath();
-
         setupExceptionHandling();
-        setupErrorHandler();
 
-        ProcessorDefinition<RouteDefinition> routeDefinition = from(fromPath);
+        ProcessorDefinition<RouteDefinition> routeDefinition = from(getListenUri());
         for(Processor processor: routeBuilder.getPreProcessors()) {
             routeDefinition = routeDefinition.process(processor);
         }
@@ -45,34 +40,32 @@ public class CamelWebServiceRoute extends RouteBuilder {
         }
 
         routeDefinition = routeDefinition.to(routeBuilder.getToUri());
-        routeDefinition.process(new ProxyResponseProcessor());
 
         if (config.useCompression()) {
             routeDefinition.unmarshal().gzip();
         }
+
+        routeDefinition.process(new ProxyResponsePostProcessor());
     }
 
-    private void setupErrorHandler() {
-
-        errorHandler(deadLetterChannel("mock:death")
-                .maximumRedeliveries(-1)
-                .redeliveryDelay(config.getRedeliverDelay())
-                .logHandled(true)
-                .logNewException(true)
-                .logExhaustedMessageHistory(true)
-                .logExhausted(true)
-                .logStackTrace(true)
-                .loggingLevel(LoggingLevel.WARN)
-                .logRetryStackTrace(true)
-        );
-    }
-
-    private String getFromPath() {
+    private String getListenUri() {
         String hostname = String.format("%s:%s", config.getHostname(), config.getPort());
         return String.format("jetty:http://%s?matchOnUriPrefix=true", hostname);
     }
 
     private void setupExceptionHandling() {
+        errorHandler(deadLetterChannel("mock:death")
+                        .maximumRedeliveries(-1)
+                        .redeliveryDelay(config.getRedeliverDelay())
+                        .logHandled(true)
+                        .logNewException(true)
+                        .logExhaustedMessageHistory(true)
+                        .logExhausted(true)
+                        .logStackTrace(true)
+                        .loggingLevel(LoggingLevel.WARN)
+                        .logRetryStackTrace(true)
+        );
+
         onException(HttpOperationFailedException.class)
                 .process(new TimeoutExceptionHandler())
                 .handled(true);

@@ -7,12 +7,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import proxy.serializer.ProxyResponseSerializer;
 
-public class WebServiceResponseProcessor implements Processor {
+public class ProxyResponsePreProcessor implements Processor {
 
-    private final Logger logger = LoggerFactory.getLogger(WebServiceResponseProcessor.class);
+    private final Logger logger = LoggerFactory.getLogger(ProxyResponsePreProcessor.class);
     private final ProxyResponseSerializer serializer;
 
-    public WebServiceResponseProcessor(ProxyResponseSerializer serializer) {
+    public ProxyResponsePreProcessor(ProxyResponseSerializer serializer) {
         this.serializer = serializer;
     }
 

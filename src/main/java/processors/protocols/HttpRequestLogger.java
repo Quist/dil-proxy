@@ -1,15 +1,11 @@
-package processors;
+package processors.protocols;
 
 import org.apache.camel.Exchange;
-import org.apache.camel.http.common.HttpMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.apache.camel.Processor;
-import javax.servlet.http.HttpServletRequest;
-import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.Map;
 
 public class HttpRequestLogger implements Processor {
     private final Logger logger = LoggerFactory.getLogger(HttpRequestLogger.class);

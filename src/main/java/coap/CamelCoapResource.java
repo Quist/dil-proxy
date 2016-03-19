@@ -6,7 +6,6 @@ import org.apache.camel.Processor;
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.coap.MediaTypeRegistry;
 import org.eclipse.californium.core.server.resources.CoapExchange;
-import org.eclipse.californium.core.server.resources.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

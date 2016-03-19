@@ -7,16 +7,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import proxy.serializer.ProxyRequestSerializer;
 
-import javax.servlet.http.HttpServletRequest;
-
-public class ProxyPreprocessor implements Processor {
-    private final Logger logger = LoggerFactory.getLogger(ProxyPreprocessor.class);
+public class ProxyRequestPreprocessor implements Processor {
+    private final Logger logger = LoggerFactory.getLogger(ProxyRequestPreprocessor.class);
     private final ProxyRequestSerializer serializer;
 
-    public ProxyPreprocessor(ProxyRequestSerializer serializer) {
+    public ProxyRequestPreprocessor(ProxyRequestSerializer serializer) {
         this.serializer = serializer;
     }
-
 
     @Override
     public void process(Exchange exchange) throws Exception {

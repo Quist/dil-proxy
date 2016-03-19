@@ -42,7 +42,7 @@ public class ProxyMessage {
             return new ProxyMessage(this);
         }
 
-        private Map getHeaders(JSONObject headers){
+        private Map<String, String> getHeaders(JSONObject headers){
             Map<String, String> httpHeaders = new HashMap<>();
             Iterator<String> headerIterator = headers.keys();
             while (headerIterator.hasNext()) {

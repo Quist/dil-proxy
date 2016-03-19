@@ -14,12 +14,11 @@ public class ProxyResponseSerializer {
         Collection<String> headerNames = exchange.getIn().getHeaders().keySet() ;
         JSONObject headers = new JSONObject();
 
-        for (String headerName: headerNames) {
-            if (!headerName.startsWith("Camel")) {
-                String headerValue = exchange.getIn().getHeader(headerName).toString();
-                headers.put(headerName, headerValue);
-            }
-        }
+        headerNames.stream().filter(headerName -> !headerName.startsWith("Camel")).forEach(headerName -> {
+            String headerValue = exchange.getIn().getHeader(headerName).toString();
+            headers.put(headerName, headerValue);
+        });
+
         proxyMessage.put("headers" , headers);
         proxyMessage.put("responsecode", exchange.getIn().getHeader(Exchange.HTTP_RESPONSE_CODE));
 
