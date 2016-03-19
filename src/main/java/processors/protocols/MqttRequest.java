@@ -4,7 +4,6 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import proxy.serializer.ProxyHeaderDeserializer;
 import proxy.serializer.ProxyMessage;
 import proxy.serializer.ProxyRequestDeserializer;
 
@@ -14,7 +13,7 @@ class MqttRequest implements Processor {
     private final Logger logger = LoggerFactory.getLogger(MqttRequest.class);
 
     private MqttRequest() {
-        this.deserializer = new ProxyRequestDeserializer(new ProxyHeaderDeserializer());
+        this.deserializer = new ProxyRequestDeserializer();
     }
 
     @Override

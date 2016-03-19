@@ -18,12 +18,6 @@ public class ProxyRequestPreprocessor implements Processor {
     @Override
     public void process(Exchange exchange) throws Exception {
         logger.info("Starting pre processing exchange before sending to other proxy.");
-
-        HttpMessage httpMessage = exchange.getIn(HttpMessage.class);
-        String proxyHeader = serializer.serialize(httpMessage);
-
-        String body = exchange.getIn().getBody(String.class);
-        body = proxyHeader + body;
-        exchange.getIn().setBody(body);
+        exchange.getIn().setBody(serializer.serialize(exchange));
     }
 }

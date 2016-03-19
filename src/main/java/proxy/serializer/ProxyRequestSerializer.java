@@ -1,5 +1,6 @@
 package proxy.serializer;
 
+import org.apache.camel.Exchange;
 import org.apache.camel.http.common.HttpMessage;
 import org.json.JSONObject;
 
@@ -8,17 +9,22 @@ import java.util.Enumeration;
 
 public class ProxyRequestSerializer  {
 
-    public String serialize(HttpMessage message) {
-        HttpServletRequest request = message.getRequest();
-        JSONObject header = new JSONObject();
-        header.put("path", request.getRequestURL());
-        header.put("method", request.getMethod());
-        header.put("query", request.getQueryString());
+    public String serialize(Exchange exchange) {
+        HttpServletRequest request = exchange.getIn(HttpMessage.class).getRequest();
+        JSONObject proxyMessage = new JSONObject();
+        proxyMessage.put("path", request.getRequestURL());
+        proxyMessage.put("method", request.getMethod());
+        proxyMessage.put("query", request.getQueryString());
 
         JSONObject httpHeaders = getHttpHeaders(request);
-        header.put("headers", httpHeaders);
+        proxyMessage.put("headers", httpHeaders);
 
-        return header.toString();
+        String body = exchange.getIn().getBody(String.class);
+        if (body != null) {
+            proxyMessage.put("body", body);
+        }
+
+        return proxyMessage.toString();
     }
 
     private JSONObject getHttpHeaders(HttpServletRequest request) {

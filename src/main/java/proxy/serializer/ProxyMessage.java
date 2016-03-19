@@ -29,7 +29,7 @@ public class ProxyMessage {
         }
 
         public Builder query(String query) {
-            this.query = Optional.ofNullable(query);
+            this.query = Optional.of(query);
             return this;
         }
 
