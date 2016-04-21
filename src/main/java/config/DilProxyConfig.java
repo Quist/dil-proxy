@@ -18,6 +18,9 @@ public class DilProxyConfig {
 
     private Optional<AmqpConfig> amqpConfig = Optional.empty();
     private final Optional<MqttConfig> mqttConfig = Optional.empty();
+    private final int maximumRedeliveries;
+    private final boolean useExponentialBackOff;
+    private double backOffMultiplier;
 
     public DilProxyConfig(Config config) {
         config = config.withFallback(ConfigFactory.load());
@@ -38,6 +41,19 @@ public class DilProxyConfig {
             redeliverDelay = proxyConfig.getLong("redeliverDelay");
         } else {
             redeliverDelay = ConfigDefaults.redeliverDelay;
+        }
+
+        if (proxyConfig.hasPath("useExponentialBackOff")) {
+            useExponentialBackOff = proxyConfig.getBoolean("useExponentialBackOff");
+            backOffMultiplier = proxyConfig.getDouble("backOffMultiplier");
+        } else {
+            useExponentialBackOff = false;
+        }
+
+        if (proxyConfig.hasPath("maximumRedeliveries")) {
+            maximumRedeliveries = proxyConfig.getInt("maximumRedeliveries");
+        } else {
+            maximumRedeliveries = -1;
         }
 
         selectedProtocol = getProtocol(proxyConfig);
@@ -113,5 +129,17 @@ public class DilProxyConfig {
 
     public long getRedeliverDelay() {
         return redeliverDelay;
+    }
+
+    public int getMaximumRedeliveries() {
+        return maximumRedeliveries;
+    }
+
+    public boolean useExponentialBackOff() {
+        return useExponentialBackOff;
+    }
+
+    public double getBackOffMultiplier() {
+        return backOffMultiplier;
     }
 }

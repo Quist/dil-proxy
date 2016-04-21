@@ -13,6 +13,8 @@ import processors.ProxyResponsePostProcessor;
 import processors.errorhandlers.TimeoutExceptionHandler;
 import routing.protocols.DilRouteBuilder;
 
+import java.net.ConnectException;
+
 
 public class CamelWebServiceRoute extends RouteBuilder {
     private final Logger logger = LoggerFactory.getLogger(CamelWebServiceRoute.class);
@@ -54,17 +56,32 @@ public class CamelWebServiceRoute extends RouteBuilder {
     }
 
     private void setupExceptionHandling() {
-        errorHandler(deadLetterChannel("mock:death")
-                        .maximumRedeliveries(-1)
-                        .redeliveryDelay(config.getRedeliverDelay())
-                        .logHandled(true)
-                        .logNewException(true)
-                        .logExhaustedMessageHistory(true)
-                        .logExhausted(true)
-                        .logStackTrace(true)
-                        .loggingLevel(LoggingLevel.WARN)
-                        .logRetryStackTrace(true)
-        );
+        if (config.useExponentialBackOff()) {
+            errorHandler(deadLetterChannel("mock:death")
+                    .maximumRedeliveries(config.getMaximumRedeliveries())
+                    .useExponentialBackOff()
+                    .backOffMultiplier(config.getBackOffMultiplier())
+                    .logHandled(true)
+                    .logNewException(true)
+                    .logExhaustedMessageHistory(true)
+                    .logExhausted(true)
+                    .logStackTrace(true)
+                    .loggingLevel(LoggingLevel.WARN)
+                    .logRetryStackTrace(true));
+        } else {
+            errorHandler(deadLetterChannel("mock:death")
+                            .maximumRedeliveries(config.getMaximumRedeliveries())
+                            .redeliveryDelay(config.getRedeliverDelay())
+                            .logNewException(true)
+                            .logExhaustedMessageHistory(true)
+                            .logExhausted(true)
+                            .logStackTrace(true)
+                            .loggingLevel(LoggingLevel.WARN)
+                            .logRetryStackTrace(true)
+                            .onPrepareFailure(new TimeoutExceptionHandler())
+
+            );
+        }
 
         onException(HttpOperationFailedException.class)
                 .process(new TimeoutExceptionHandler())
