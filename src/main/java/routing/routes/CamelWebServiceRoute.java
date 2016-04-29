@@ -67,7 +67,9 @@ public class CamelWebServiceRoute extends RouteBuilder {
                     .logExhausted(true)
                     .logStackTrace(true)
                     .loggingLevel(LoggingLevel.WARN)
-                    .logRetryStackTrace(true));
+                    .logRetryStackTrace(true)
+                    .onPrepareFailure(new TimeoutExceptionHandler()));
+
         } else {
             errorHandler(deadLetterChannel("mock:death")
                             .maximumRedeliveries(config.getMaximumRedeliveries())
