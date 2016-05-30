@@ -6,6 +6,8 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.eclipse.californium.core.CoapClient;
 import org.eclipse.californium.core.CoapResponse;
 import org.eclipse.californium.core.coap.*;
+import org.eclipse.californium.core.network.CoapEndpoint;
+import org.eclipse.californium.core.network.config.NetworkConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,10 +35,7 @@ class CoapProducer extends DefaultProducer {
     @Override
     public void process(Exchange exchange) throws Exception {
         logger.info("Producing CoAP request");
-        CoapClient client = new CoapClient(endpoint.getEndpointUri());
-        if (timeout.isPresent()) {
-            client.setTimeout(timeout.get());
-        }
+        CoapClient client = createCoapClient();
 
         CoapResponse response = client.post(exchange.getIn().getBody(byte[].class), MediaTypeRegistry.APPLICATION_OCTET_STREAM);
 
@@ -48,10 +47,21 @@ class CoapProducer extends DefaultProducer {
             throw new ConnectException("No CoAP response received");
         } else {
             logger.info("CoAP response received. Status code: " + response.getCode());
-
             exchange.getIn().setBody(response.getPayload());
             exchange.getIn().setHeader(Exchange.HTTP_RESPONSE_CODE, getHttpStatusCode(response.getCode()));
         }
+    }
+
+    private CoapClient createCoapClient() {
+        CoapClient client = new CoapClient(endpoint.getEndpointUri());
+        NetworkConfig config = new NetworkConfig();
+        config.setInt(NetworkConfig.Keys.PREFERRED_BLOCK_SIZE,1024);
+        client.setEndpoint(new CoapEndpoint(config));
+
+        if (timeout.isPresent()) {
+            client.setTimeout(timeout.get());
+        }
+        return client;
     }
 
     private int getHttpStatusCode(CoAP.ResponseCode coapResponseCode) {

@@ -4,6 +4,7 @@ import org.apache.camel.Processor;
 import org.apache.camel.impl.EventDrivenPollingConsumer;
 import org.eclipse.californium.core.CoapServer;
 import org.eclipse.californium.core.network.CoapEndpoint;
+import org.eclipse.californium.core.network.config.NetworkConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,8 +28,8 @@ class CoapConsumer extends EventDrivenPollingConsumer {
     @Override
     protected void doStart() throws Exception {
         logger.info("Starting COAP server");
-        CoapServer server = new CoapServer();
-        addEndpoint(server);
+
+        CoapServer server = createServer();
         server.add(new CamelCoapResource("test", endpoint, processor));
         server.start();
     }
@@ -38,8 +39,13 @@ class CoapConsumer extends EventDrivenPollingConsumer {
 
     }
 
-    private void addEndpoint(CoapServer server) {
+    private CoapServer createServer() {
+        NetworkConfig config = new NetworkConfig();
+        config.setInt(NetworkConfig.Keys.PREFERRED_BLOCK_SIZE, 2048);
         InetSocketAddress bindToAddress = new InetSocketAddress("0.0.0", port);
-        server.addEndpoint(new CoapEndpoint(bindToAddress));
+
+        CoapServer server = new CoapServer();
+        server.addEndpoint(new CoapEndpoint(bindToAddress, config));
+        return server;
     }
 }
