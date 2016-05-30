@@ -41,7 +41,7 @@ class CoapConsumer extends EventDrivenPollingConsumer {
 
     private CoapServer createServer() {
         NetworkConfig config = new NetworkConfig();
-        config.setInt(NetworkConfig.Keys.PREFERRED_BLOCK_SIZE, 2048);
+        config.setInt(NetworkConfig.Keys.PREFERRED_BLOCK_SIZE, 1024);
         InetSocketAddress bindToAddress = new InetSocketAddress("0.0.0", port);
 
         CoapServer server = new CoapServer();
